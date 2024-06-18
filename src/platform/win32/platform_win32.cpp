@@ -1,15 +1,19 @@
-#include "logger.h"
-#include "GLFW/glfw3.h"
 #include "platform/platform.h"
+
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
+
+#include "logger.h"
 
 window::window(const char *title, u32 width, u32 height): width(width), height(height), internal_handle(nullptr) {
     if(!glfwInit()) {
         FATAL_ERROR("Failed to initialize GLFW");
     }
 
-    // Set window hints (vulkan) TODO: move this to a renderer-specific file
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    // Set window hints (opengl) TODO: move this to a renderer-specific file
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Create window
     internal_handle = glfwCreateWindow(width, height, title, nullptr, nullptr);
