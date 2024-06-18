@@ -1,6 +1,7 @@
 #include "platform/platform.h"
 
 #define GLFW_INCLUDE_NONE
+#include <cstdio>
 #include <GLFW/glfw3.h>
 
 #include "core/logger.h"
@@ -42,4 +43,45 @@ void window::set_framebuffer_callback(void(*callback)(void*, u32, u32)) {
 
 f64 platform_get_absolute_time() {
     return glfwGetTime();
+}
+
+file_handle::~file_handle() {
+    close();
+}
+
+bool file_handle::open(const char *path) {
+    if(internal_handle) FATAL_ERROR("Reopening on an unclosed file handle!");
+
+    // use windows api to open file
+    internal_handle = fopen(path, "rb");
+    if(!internal_handle) {
+        BERROR("Failed to open file: %s", path);
+        return false;
+    }
+
+    return true;
+}
+
+void file_handle::close() {
+    if(internal_handle) fclose((FILE*)internal_handle);
+    internal_handle = nullptr;
+}
+
+bvector<u8> file_handle::read_bytes() {
+    if(!internal_handle) FATAL_ERROR("Reading a null file!");
+
+    // Get file size
+    fseek((FILE*)internal_handle, 0, SEEK_END);
+    u32 size = ftell((FILE*)internal_handle);
+    rewind((FILE*)internal_handle);
+
+    bvector<u8> data(size+1);
+
+    // Read file
+    fread(data.begin(), 1, size, (FILE*)internal_handle);
+
+    // Null terminate
+    data[size+1] = '\0';
+
+    return data;
 }
