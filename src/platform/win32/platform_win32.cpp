@@ -3,7 +3,7 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
-#include "logger.h"
+#include "core/logger.h"
 
 window::window(const char *title, u32 width, u32 height): width(width), height(height), internal_handle(nullptr) {
     if(!glfwInit()) {
@@ -30,4 +30,16 @@ void window::poll_events() {
 
 bool window::should_close() {
     return glfwWindowShouldClose((GLFWwindow*)internal_handle);
+}
+
+void window::swap_buffers() const {
+    glfwSwapBuffers((GLFWwindow*)internal_handle);
+}
+
+void window::set_framebuffer_callback(void(*callback)(void*, u32, u32)) {
+    glfwSetFramebufferSizeCallback((GLFWwindow*)internal_handle, (GLFWframebuffersizefun)callback);
+}
+
+f64 platform_get_absolute_time() {
+    return glfwGetTime();
 }
