@@ -1,7 +1,3 @@
-//
-// Created by Matylda on 18.06.2024.
-//
-
 #include "bclock.h"
 
 #include "platform/platform.h"

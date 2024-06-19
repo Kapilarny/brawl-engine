@@ -1,7 +1,3 @@
-//
-// Created by Matylda on 18.06.2024.
-//
-
 #ifndef GL_SHADER_H
 #define GL_SHADER_H
 #include "defines.h"

@@ -1,7 +1,3 @@
-//
-// Created by Matylda on 18.06.2024.
-//
-
 #include "gl_shader.h"
 
 #include <glad/gl.h>
@@ -25,11 +21,15 @@ bool gl_shader::create(const char *vertex_shader, const char *fragment_shader) {
     bvector<u8> vertex_bytes = vertex_file.read_bytes();
     bvector<u8> fragment_bytes = fragment_file.read_bytes();
 
+    // Add null-terminators to end of the files to ensure that the OpenGL compiles them properly
+    vertex_bytes.push_back('\0');
+    fragment_bytes.push_back('\0');
+
     u32 vert_id = glCreateShader(GL_VERTEX_SHADER);
     u32 frag_id = glCreateShader(GL_FRAGMENT_SHADER);
 
     // Vertex shader
-    const char* vertex_source = (const char*)vertex_bytes.begin();
+    const char* vertex_source = (const char*)vertex_bytes.data();
     glShaderSource(vert_id, 1, &vertex_source, nullptr);
     glCompileShader(vert_id);
 
@@ -43,7 +43,7 @@ bool gl_shader::create(const char *vertex_shader, const char *fragment_shader) {
     }
 
     // Fragment shader
-    const char* fragment_source = (const char*)fragment_bytes.begin();
+    const char* fragment_source = (const char*)fragment_bytes.data();
     glShaderSource(frag_id, 1, &fragment_source, nullptr);
     glCompileShader(frag_id);
 

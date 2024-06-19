@@ -25,6 +25,7 @@ private:
 f64 platform_get_absolute_time();
 
 void platform_log_output(const char* msg, LOG_LEVEL level);
+void* platform_get_proc_address_ptr();
 
 class file_handle {
 public:

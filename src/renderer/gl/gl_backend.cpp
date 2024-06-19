@@ -1,13 +1,9 @@
-//
-// Created by Matylda on 18.06.2024.
-//
-
 #include "gl_backend.h"
 
+#include <stbi_image.h>
 #include <glad/gl.h>
 
 #include "core/logger.h"
-#include "GLFW/glfw3.h" // glfwGetProcAddress TODO: make this a platform thing
 #include "memory/bvector.h"
 
 void on_resize(void* internal, u32 width, u32 height) {
@@ -15,7 +11,7 @@ void on_resize(void* internal, u32 width, u32 height) {
 }
 
 gl_backend::gl_backend(window &window): renderer_frontend(window) {
-    i32 version = gladLoadGL(glfwGetProcAddress);
+    i32 version = gladLoadGL((GLADloadfunc)platform_get_proc_address_ptr());
     if(!version) {
         FATAL_ERROR("Failed to initialize OpenGL context!");
     }
@@ -25,14 +21,16 @@ gl_backend::gl_backend(window &window): renderer_frontend(window) {
     glViewport(0, 0, window.get_width(), window.get_height());
     window.set_framebuffer_callback(on_resize);
 
+    // Load shaders
     shader.create("../shaders/test_shader.vert", "../shaders/test_shader.frag");
 
     float vertices[] = {
-         // positions       // colors
-         0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom left
-         0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f // top
-    };
+        // positions         // colors           // texture coords
+        0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
+        0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
+       -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
+       -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left
+   };
 
     u32 indices[] = {
         0, 1, 3,   // first triangle
@@ -56,7 +54,7 @@ gl_backend::gl_backend(window &window): renderer_frontend(window) {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     // Vertex Attributes
-    i32 stride = 6 * sizeof(f32);
+    i32 stride = 8 * sizeof(f32);
 
     // Position
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)0);
@@ -66,7 +64,22 @@ gl_backend::gl_backend(window &window): renderer_frontend(window) {
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, (void*)(3 * sizeof(f32)));
     glEnableVertexAttribArray(1);
 
+    // Texture
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, (void*)(6 * sizeof(f32)));
+    glEnableVertexAttribArray(2);
+
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); TODO: Add wireframe mode
+
+    stbi_set_flip_vertically_on_load(true); // Flip the textures vertically
+
+    // Load textures
+    container.load_file("../resources/container.jpg", texture_format::RGB);
+    face.load_file("../resources/awesomeface.png", texture_format::RGBA);
+
+    // Set proper texture units
+    shader.use(); // Don't forget to activate the shader before setting uniforms!
+    shader.set_i32("texture1", 0);
+    shader.set_i32("texture2", 1);
 }
 
 gl_backend::~gl_backend() {
@@ -81,10 +94,14 @@ void gl_backend::render() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
+    // Bind textures
+    container.bind(0);
+    face.bind(1);
+
     shader.use();
     glBindVertexArray(vao);
-    // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    // glDrawArrays(GL_TRIANGLES, 0, 3);
 
     wnd.swap_buffers();
 }

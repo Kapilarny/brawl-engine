@@ -86,10 +86,14 @@ bvector<u8> file_handle::read_bytes() {
     u32 size = ftell((FILE*)internal_handle);
     rewind((FILE*)internal_handle);
 
-    bvector<u8> data(size+1); // we null-termintate our data TODO: is this needed bruv
+    bvector<u8> data(size);
 
     // Read file
-    fread(data.begin(), 1, size, (FILE*)internal_handle);
+    fread(data.data(), 1, size, (FILE*)internal_handle);
 
     return data;
+}
+
+void* platform_get_proc_address_ptr() {
+    return (void*)glfwGetProcAddress;
 }

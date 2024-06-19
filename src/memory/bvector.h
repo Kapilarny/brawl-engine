@@ -7,58 +7,59 @@
 template<typename T>
 class bvector {
 public:
-    bvector() : data(nullptr), size(0), capacity(0) {}
+    bvector() : data_ptr(nullptr), count(0), capacity(0) {}
 
-    bvector(u64 initial_capacity) : data(new T[initial_capacity]), size(0), capacity(initial_capacity) {
-        bzero_memory(data, sizeof(T) * initial_capacity);
+    bvector(u64 initial_capacity) {
+        capacity = initial_capacity;
+        count = initial_capacity;
+
+        data_ptr = new T[capacity * sizeof(T)];
+        bzero_memory(data_ptr, capacity * sizeof(T));
     }
 
-    ~bvector() { delete[] data; }
+    ~bvector() { delete[] data_ptr; }
 
     void push_back(T value) {
-        if(size >= capacity) {
-            reserve(capacity == 0 ? 1 : capacity * 2);
+        if(count >= capacity) {
+            resize(capacity == 0 ? 1 : capacity * 2);
         }
-        data[size++] = value;
+
+        data_ptr[count++] = value;
     }
 
     void clear() {
-        size = 0;
+        count = 0;
     }
 
-    void reserve(u64 new_capacity) {
-        if(new_capacity <= capacity) {
-            return;
-        }
+    void resize(u64 new_capacity) {
+        if(capacity >= new_capacity) return;
 
         T* new_data = new T[new_capacity];
-        for(u64 i = 0; i < size; i++) {
-            new_data[i] = data[i];
-        }
+        bcopy_memory(new_data, data_ptr, capacity * sizeof(T));
 
-        delete[] data;
+        delete[] data_ptr;
 
-        data = new_data;
+        data_ptr = new_data;
         capacity = new_capacity;
     }
 
-    T* begin() {
-        return data;
+    T* data() {
+        return data_ptr;
     }
 
     T operator[](u64 index) const {
-        return data[index];
+        return data_ptr[index];
     }
 
     T& operator[](u64 index) {
-        return data[index];
+        return data_ptr[index];
     }
 
-    [[nodiscard]] u64 get_size() const { return size; }
+    [[nodiscard]] u64 size() const { return count; }
     [[nodiscard]] u64 get_capacity() const { return capacity; }
 private:
-    T* data;
-    u64 size;
+    T* data_ptr;
+    u64 count;
     u64 capacity;
 };
 

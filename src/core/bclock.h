@@ -1,7 +1,3 @@
-//
-// Created by Matylda on 18.06.2024.
-//
-
 #ifndef BCLOCK_H
 #define BCLOCK_H
 
