@@ -2,6 +2,7 @@
 #define PLATFORM_H
 
 #include "defines.h"
+#include "core/logger.h"
 #include "memory/bvector.h"
 
 class window {
@@ -22,6 +23,8 @@ private:
 };
 
 f64 platform_get_absolute_time();
+
+void platform_log_output(const char* msg, LOG_LEVEL level);
 
 class file_handle {
 public:

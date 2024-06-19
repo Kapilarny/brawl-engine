@@ -16,7 +16,7 @@
 
 enum class LOG_LEVEL {
     FATAL = 0,
-    ERROR = 1,
+    ERR = 1,
     WARN = 2,
     INFO = 3,
     DEBUG = 4,
@@ -31,7 +31,7 @@ void log_output(LOG_LEVEL level, const char* message, ...);
 #define FATAL_ERROR(msg) { BFATAL("%s -> " __FILE__ " at line %d", msg, __LINE__); *(char*)0 = 0;} // funny crash. Watch the `*(char*)0 = 0` JF Sebastien presentation on this, its hilarious
 
 #ifndef BERROR
-#define BERROR(message, ...) log_output(LOG_LEVEL::ERROR, message, ##__VA_ARGS__);
+#define BERROR(message, ...) log_output(LOG_LEVEL::ERR, message, ##__VA_ARGS__);
 #endif
 
 #if LOG_WARN_ENABLED == 1

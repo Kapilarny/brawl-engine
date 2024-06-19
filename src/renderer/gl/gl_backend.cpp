@@ -27,12 +27,12 @@ gl_backend::gl_backend(window &window): renderer_frontend(window) {
 
     shader.create("../shaders/test_shader.vert", "../shaders/test_shader.frag");
 
-    f32 vertices[] = {
-        0.5f,  0.5f, 0.0f,  // top right
-        0.5f, -0.5f, 0.0f,  // bottom right
-       -0.5f, -0.5f, 0.0f,  // bottom left
-       -0.5f,  0.5f, 0.0f   // top left
-   };
+    float vertices[] = {
+         // positions       // colors
+         0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom left
+         0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f // top
+    };
 
     u32 indices[] = {
         0, 1, 3,   // first triangle
@@ -55,8 +55,16 @@ gl_backend::gl_backend(window &window): renderer_frontend(window) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(f32), (void*)0);
+    // Vertex Attributes
+    i32 stride = 6 * sizeof(f32);
+
+    // Position
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)0);
     glEnableVertexAttribArray(0);
+
+    // Color
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, (void*)(3 * sizeof(f32)));
+    glEnableVertexAttribArray(1);
 
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); TODO: Add wireframe mode
 }
@@ -75,7 +83,8 @@ void gl_backend::render() {
 
     shader.use();
     glBindVertexArray(vao);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
 
     wnd.swap_buffers();
 }

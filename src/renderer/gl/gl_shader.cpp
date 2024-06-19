@@ -103,4 +103,5 @@ void gl_shader::set_f32(const char *name, f32 value) const {
 }
 
 void gl_shader::set_bool(const char *name, bool value) const {
+    glUniform1f(glGetUniformLocation(program, name), value);
 }

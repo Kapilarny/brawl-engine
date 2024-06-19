@@ -4,6 +4,8 @@
 #include <cstdio>
 #include <GLFW/glfw3.h>
 
+#include <windows.h>
+
 #include "core/logger.h"
 
 window::window(const char *title, u32 width, u32 height): width(width), height(height), internal_handle(nullptr) {
@@ -23,6 +25,15 @@ window::window(const char *title, u32 width, u32 height): width(width), height(h
     }
 
     glfwMakeContextCurrent((GLFWwindow*)internal_handle);
+}
+
+void platform_log_output(const char* msg, LOG_LEVEL level) {
+    constexpr u8 level_colors[6] = {64, 4, 6, 2, 1, 8};
+
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole, level_colors[(u32)level]);
+
+    WriteConsoleA(hConsole, msg, strlen(msg), NULL, NULL);
 }
 
 void window::poll_events() {
@@ -75,13 +86,10 @@ bvector<u8> file_handle::read_bytes() {
     u32 size = ftell((FILE*)internal_handle);
     rewind((FILE*)internal_handle);
 
-    bvector<u8> data(size);
+    bvector<u8> data(size+1); // we null-termintate our data TODO: is this needed bruv
 
     // Read file
     fread(data.begin(), 1, size, (FILE*)internal_handle);
-
-    // // Null terminate
-    // data[size+1] = '\0';
 
     return data;
 }
