@@ -75,13 +75,13 @@ bvector<u8> file_handle::read_bytes() {
     u32 size = ftell((FILE*)internal_handle);
     rewind((FILE*)internal_handle);
 
-    bvector<u8> data(size+1);
+    bvector<u8> data(size);
 
     // Read file
     fread(data.begin(), 1, size, (FILE*)internal_handle);
 
-    // Null terminate
-    data[size+1] = '\0';
+    // // Null terminate
+    // data[size+1] = '\0';
 
     return data;
 }

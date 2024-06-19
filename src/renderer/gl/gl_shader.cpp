@@ -81,11 +81,26 @@ gl_shader::~gl_shader() {
     if(program) glDeleteProgram(program);
 }
 
-void gl_shader::bind() const {
+void gl_shader::use() const {
     if(!program) {
-        BERROR("Trying to use an unbound shader!");
+        BERROR("Trying to use a shader which is not loaded!");
         return;
     }
 
     glUseProgram(program);
+}
+
+void gl_shader::set_i32(const char *name, i32 value) const {
+    glUniform1i(glGetUniformLocation(program, name), value);
+}
+
+void gl_shader::set_u32(const char *name, u32 value) const {
+    glUniform1ui(glGetUniformLocation(program, name), value);
+}
+
+void gl_shader::set_f32(const char *name, f32 value) const {
+    glUniform1f(glGetUniformLocation(program, name), value);
+}
+
+void gl_shader::set_bool(const char *name, bool value) const {
 }

@@ -16,7 +16,7 @@ public:
     void render() override;
     const char* get_name() override;
 private:
-    u32 vbo, vao;
+    u32 vbo, vao, ebo;
     gl_shader shader;
 };
 
