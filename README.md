@@ -10,6 +10,7 @@ should be flexible enough to be used for other types of games as well.
 For now this is more of my checklist on what things i want done in order (although some things may be done out of it)
 
 - [ ] 2D rendering
+- [ ] Entity-Component-System
 - [ ] Proper input handling
 - [ ] Scene management
 - [ ] Proper memory management

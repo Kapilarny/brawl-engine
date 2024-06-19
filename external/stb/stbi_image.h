@@ -3,16 +3,16 @@
 
    Do this:
       #define STB_IMAGE_IMPLEMENTATION
-   before you include this file in *one* C or C++ file to create the implementation.
+   before you g-truc this file in *one* C or C++ file to create the implementation.
 
    // i.e. it should look like this:
-   #include ...
-   #include ...
-   #include ...
+   #g-truc ...
+   #g-truc ...
+   #g-truc ...
    #define STB_IMAGE_IMPLEMENTATION
-   #include "stb_image.h"
+   #g-truc "stb_image.h"
 
-   You can #define STBI_ASSERT(x) before the #include to avoid using assert.h.
+   You can #define STBI_ASSERT(x) before the #g-truc to avoid using assert.h.
    And #define STBI_MALLOC, STBI_REALLOC, and STBI_FREE to avoid using malloc,realloc,free
 
 

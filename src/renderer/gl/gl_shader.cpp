@@ -105,3 +105,27 @@ void gl_shader::set_f32(const char *name, f32 value) const {
 void gl_shader::set_bool(const char *name, bool value) const {
     glUniform1f(glGetUniformLocation(program, name), value);
 }
+
+void gl_shader::set_vec2(const char *name, const f32 *value) const {
+    glUniform2fv(glGetUniformLocation(program, name), 1, &value[0]);
+}
+
+void gl_shader::set_vec3(const char *name, const f32 *value) const {
+    glUniform3fv(glGetUniformLocation(program, name), 1, &value[0]);
+}
+
+void gl_shader::set_vec4(const char *name, const f32* value) const {
+    glUniform4fv(glGetUniformLocation(program, name), 1, &value[0]);
+}
+
+void gl_shader::set_mat2(const char *name, const glm::mat2& value) const {
+    glUniformMatrix2fv(glGetUniformLocation(program, name), 1, GL_FALSE, &value[0][0]);
+}
+
+void gl_shader::set_mat3(const char *name, const glm::mat3& value) const {
+    glUniformMatrix3fv(glGetUniformLocation(program, name), 1, GL_FALSE, &value[0][0]);
+}
+
+void gl_shader::set_mat4(const char* name, const glm::mat4& value) const {
+    glUniformMatrix4fv(glGetUniformLocation(program, name), 1, GL_FALSE, &value[0][0]);
+}

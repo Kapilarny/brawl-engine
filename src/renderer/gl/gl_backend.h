@@ -13,9 +13,9 @@ public:
     void render() override;
     const char* get_name() override;
 private:
-    u32 vbo, vao, ebo;
+    u32 vbo{}, vao{}, ebo{};
     gl_shader shader;
-    gl_texture container, face;
+    gl_texture container{}, face{};
 };
 
 #endif //GL_BACKEND_H

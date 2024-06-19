@@ -1,7 +1,9 @@
 #ifndef GL_SHADER_H
 #define GL_SHADER_H
+
 #include "defines.h"
 
+#include <glm/glm.hpp>
 
 class gl_shader {
 public:
@@ -17,6 +19,15 @@ public:
     void set_f32(const char* name, f32 value) const;
 
     void set_bool(const char* name, bool value) const;
+
+    void set_vec2(const char* name, const f32* value) const;
+    void set_vec3(const char* name, const f32* value) const;
+    void set_vec4(const char* name, const f32* value) const;
+
+    void set_mat2(const char *name, const glm::mat2& value) const;
+    void set_mat3(const char* name, const glm::mat3& value) const;
+    void set_mat4(const char* name, const glm::mat4& value) const;
+
 
     void use() const;
 private:
