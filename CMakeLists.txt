@@ -32,6 +32,17 @@ add_executable(brawl_engine
         src/renderer/gl/gl_texture.h
         src/core/camera.cpp
         src/core/camera.h
+        src/ecs/ecs.h
+        src/ecs/entity_manager.cpp
+        src/ecs/entity_manager.h
+        src/ecs/component_array.cpp
+        src/ecs/component_array.h
+        src/ecs/component_manager.cpp
+        src/ecs/component_manager.h
+        src/ecs/isystem.cpp
+        src/ecs/isystem.h
+        src/ecs/system_manager.cpp
+        src/ecs/system_manager.h
 )
 
 target_link_libraries(brawl_engine PRIVATE glfw)
