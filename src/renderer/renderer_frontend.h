@@ -15,6 +15,7 @@ public:
     virtual ~renderer_frontend() = default;
 
     virtual void render() = 0;
+    virtual void draw_tex_quad(f32 x, f32 y, u32 texture_id) = 0; // TODO: remove this, this is for ECS testing
     virtual const char* get_name() = 0;
 protected:
     window& wnd;

@@ -43,6 +43,12 @@ add_executable(brawl_engine
         src/ecs/isystem.h
         src/ecs/system_manager.cpp
         src/ecs/system_manager.h
+        src/ecs/ecs_manager.cpp
+        src/ecs/ecs_manager.h
+        src/ecs/components/transform.h
+        src/ecs/components/texture_2d.h
+        src/ecs/systems/draw_system.cpp
+        src/ecs/systems/draw_system.h
 )
 
 target_link_libraries(brawl_engine PRIVATE glfw)

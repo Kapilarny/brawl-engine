@@ -10,9 +10,11 @@ public:
     explicit gl_backend(window& window);
     ~gl_backend() override;
 
+    void draw_tex_quad(f32 x, f32 y, u32 texture_id) override;
     void render() override;
     const char* get_name() override;
 private:
+    bool drawing = false;
     u32 vbo{}, vao{}, ebo{};
     gl_shader shader;
     gl_texture container{}, face{};

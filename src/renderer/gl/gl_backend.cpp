@@ -94,9 +94,40 @@ gl_backend::~gl_backend() {
     BINFO("Destroyed GL Backend!");
 }
 
+void gl_backend::draw_tex_quad(f32 x, f32 y, u32 texture_id) {
+    if(!drawing) {
+        BWARN("Trying to draw a quad outside of a draw!");
+        return;
+    }
+
+    shader.use();
+    shader.set_i32("texture1", 0); // Texture unit 0
+
+    auto model = glm::mat4(1.0f);
+    auto view = glm::mat4(1.0f);
+    auto projection = glm::mat4(1.0f);
+
+    model = glm::rotate(model, (f32)platform_get_absolute_time(), glm::vec3(0.5f, 1.0f, 0.0f));
+    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+    projection = glm::perspective(glm::radians(45.0f), (f32)wnd.get_width() / (f32)wnd.get_height(), 0.1f, 100.0f);
+
+    model = glm::translate(model, glm::vec3(x, y, 0.0f));
+
+    shader.set_mat4("model", model);
+    shader.set_mat4("view", view);
+    shader.set_mat4("projection", projection);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+}
+
 void gl_backend::render() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
+
+    drawing = true;
 
     // Bind textures
     container.bind(0);
@@ -119,6 +150,8 @@ void gl_backend::render() {
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     // glDrawArrays(GL_TRIANGLES, 0, 3);
+
+    drawing = false;
 
     wnd.swap_buffers();
 }
