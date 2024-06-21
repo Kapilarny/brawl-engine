@@ -49,6 +49,13 @@ add_executable(brawl_engine
         src/ecs/components/texture_2d.h
         src/ecs/systems/draw_system.cpp
         src/ecs/systems/draw_system.h
+        src/renderer/vertex_array.h
+        src/renderer/buffers.h
+        src/renderer/gl/gl_buffers.cpp
+        src/renderer/gl/gl_buffers.h
+        src/renderer/gl/gl_vertex_array.cpp
+        src/renderer/gl/gl_vertex_array.h
+        src/renderer/vertex_array.cpp
 )
 
 target_link_libraries(brawl_engine PRIVATE glfw)

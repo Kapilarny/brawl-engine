@@ -1,6 +1,8 @@
 #ifndef RENDERER_FRONTEND_H
 #define RENDERER_FRONTEND_H
 
+#include <glm/vec4.hpp>
+
 #include "defines.h"
 #include "platform/platform.h"
 
@@ -15,7 +17,11 @@ public:
     virtual ~renderer_frontend() = default;
 
     virtual void render() = 0;
-    virtual void draw_tex_quad(f32 x, f32 y, u32 texture_id) = 0; // TODO: remove this, this is for ECS testing
+    virtual void set_clear_color(glm::vec4& color) = 0;
+
+    virtual void draw_indexed(u32 vao, u32 ebo, u32 index_count = 0) = 0;
+
+    virtual void set_viewport(u32 x, u32 y, u32 width, u32 height) = 0;
     virtual const char* get_name() = 0;
 protected:
     window& wnd;
@@ -28,5 +34,7 @@ protected:
  * @return Pointer to renderer frontend
  */
 renderer_frontend* create_renderer(RENDERER_API api, window& window);
+
+RENDERER_API get_renderer_api();
 
 #endif //RENDERER_FRONTEND_H
