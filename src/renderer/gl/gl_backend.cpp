@@ -77,8 +77,8 @@ gl_backend::gl_backend(window &window): renderer_frontend(window) {
     stbi_set_flip_vertically_on_load(true); // Flip the textures vertically
 
     // Load textures
-    container.load_file("../resources/container.jpg", texture_format::RGB);
-    face.load_file("../resources/awesomeface.png", texture_format::RGBA);
+    // container.load_file("../resources/container.jpg", texture_format::RGB);
+    // face.load_file("../resources/awesomeface.png", texture_format::RGBA);
 
     // Set proper texture units
     // shader.use(); // Don't forget to activate the shader before setting uniforms!
@@ -95,7 +95,7 @@ gl_backend::~gl_backend() {
 }
 
 void gl_backend::begin_render() {
-    ASSERT(drawing, "Already drawing!");
+    ASSERT(!drawing, "Already drawing!");
 
     glClearColor(clear_color.r, clear_color.g, clear_color.b, clear_color.a);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -103,8 +103,8 @@ void gl_backend::begin_render() {
     drawing = true;
 
     // Bind textures
-    container.bind(0);
-    face.bind(1);
+    // container.bind(0);
+    // face.bind(1);
 
     // shader.use();
 
@@ -126,7 +126,7 @@ void gl_backend::begin_render() {
 }
 
 void gl_backend::end_render() {
-    ASSERT(!drawing, "Not drawing!");
+    ASSERT(drawing, "Not drawing!");
 
     wnd.swap_buffers();
 

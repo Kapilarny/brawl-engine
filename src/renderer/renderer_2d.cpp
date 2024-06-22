@@ -1,5 +1,53 @@
 #include "renderer_2d.h"
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+renderer_2d::renderer_2d(window &window, RENDERER_API api) : renderer(create_renderer(api, window)), wnd(window) {
+    quad_vertex_array = create_vertex_array();
+
+    float verts[] = {
+        // positions         // texture coords
+         0.5f,  0.5f,  0.0f,   1.0f, 1.0f,   // top right
+         0.5f, -0.5f,  0.0f,   1.0f, 0.0f,   // bottom right
+        -0.5f, -0.5f,  0.0f,   0.0f, 0.0f,   // bottom left
+        -0.5f,  0.5f,  0.0f,   0.0f, 1.0f
+    };
+
+    auto vert_buff = vertex_buffer::create(verts, sizeof(verts));
+    vert_buff->set_layout(buffer_layout({
+         {shader_data_type::FLOAT3, "a_position"},
+          {shader_data_type::FLOAT2, "a_tex_coords"}
+    }));
+
+    u32 indices[] = {
+        0, 1, 3,
+        1, 2, 3
+    };
+
+    auto index_buff = index_buffer::create(indices, sizeof(indices) / sizeof(u32));
+    quad_vertex_array->add_vertex_buffer(vert_buff.get());
+    quad_vertex_array->set_index_buffer(index_buff.get());
+
+    quad_shader = create_shader("../shaders/test_shader.vert", "../shaders/test_shader.frag");
+}
+
+void renderer_2d::draw_quad(glm::vec2 &position, glm::vec2 &size, glm::vec4 &color) {
+
+}
+
+void renderer_2d::draw_quad(glm::vec2 &position, glm::vec2 &size, texture *texture) {\
+    auto model = glm::mat4(1.0f);
+    auto view = glm::mat4(1.0f);
+    auto projection = glm::mat4(1.0f);
+
+    model = glm::rotate(model, (f32)platform_get_absolute_time(), glm::vec3(0.5f, 1.0f, 0.0f));
+    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+    projection = glm::perspective(glm::radians(45.0f), (f32)wnd.get_width() / (f32)wnd.get_height(), 0.1f, 100.0f);
+
+
+}
 
 void renderer_2d::begin() {
     renderer->begin_render();

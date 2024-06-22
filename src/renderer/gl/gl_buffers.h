@@ -14,7 +14,7 @@ public:
 
     void set_data(const void *data, u32 size) override;
 
-    void set_layout(const buffer_layout& layout) override { this->layout = layout; }
+    void set_layout(buffer_layout layout) override { this->layout = layout; }
     [[nodiscard]] const buffer_layout& get_layout() const override { return layout; }
 private:
     u32 renderer_id{};

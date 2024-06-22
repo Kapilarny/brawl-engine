@@ -19,7 +19,6 @@ int main() {
         w.poll_events();
 
         rend.begin();
-
         rend.end();
     }
 

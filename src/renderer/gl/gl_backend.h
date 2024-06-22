@@ -24,7 +24,7 @@ private:
     u32 vbo{}, vao{}, ebo{};
     glm::vec4 clear_color{};
     // gl_shader shader;
-    gl_texture container{}, face{};
+    // gl_texture container, face{};
 };
 
 #endif //GL_BACKEND_H

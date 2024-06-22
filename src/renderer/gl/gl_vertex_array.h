@@ -12,7 +12,7 @@ public:
     void bind() const override;
     void unbind() const override;
 
-    void add_vertex_buffer(const vertex_buffer& vert_buffer) override;
+    void add_vertex_buffer(vertex_buffer* vert_buffer) override;
     void set_index_buffer(index_buffer* buffer) override;
 
     [[nodiscard]] const bvector<vertex_buffer*>& get_vertex_buffers() const override { return vertex_buffers; }

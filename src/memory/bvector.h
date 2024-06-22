@@ -1,6 +1,8 @@
 #ifndef BVECTOR_H
 #define BVECTOR_H
 
+#include <initializer_list>
+
 #include "bmemory.h"
 #include "defines.h"
 
@@ -8,6 +10,11 @@ template<typename T>
 class bvector {
 public:
     bvector() : data_ptr(nullptr), count(0), capacity(0) {}
+    bvector(std::initializer_list<T> list) : data_ptr(nullptr), count(0), capacity(0) {
+        for(const T& value : list) {
+            push_back(value);
+        }
+    }
 
     bvector(u64 initial_capacity) {
         capacity = initial_capacity;

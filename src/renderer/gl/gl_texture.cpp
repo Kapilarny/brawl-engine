@@ -8,19 +8,19 @@
 #include "core/logger.h"
 
 gl_texture::~gl_texture() {
-    if(texture) glDeleteTextures(1, &texture);
+    if(renderer_id) glDeleteTextures(1, &renderer_id);
 }
 
-bool gl_texture::load_file(const char *file_path, texture_format format) {
+gl_texture::gl_texture(const char *file_path, texture_format format) {
     u8* data = stbi_load(file_path, &width, &height, &channels, 0);
     if(!data) {
         BERROR("Failed to load texture: %s", file_path);
-        return false;
+        return;
     }
 
     // Generate texture
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glGenTextures(1, &renderer_id);
+    glBindTexture(GL_TEXTURE_2D, renderer_id);
 
     // Set wrapping/filtering options
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -35,16 +35,14 @@ bool gl_texture::load_file(const char *file_path, texture_format format) {
 
     // Free image data
     stbi_image_free(data);
-
-    return true;
 }
 
-void gl_texture::bind(u32 texture_id) const {
-    if(!texture) {
+void gl_texture::bind(u32 texture_id) {
+    if(!renderer_id) {
         BERROR("Trying to bind a non-loaded texture!");
         return;
     }
 
     glActiveTexture(GL_TEXTURE0 + texture_id);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindTexture(GL_TEXTURE_2D, renderer_id);
 }

@@ -40,13 +40,13 @@ GLenum shader_data_type_to_gl(shader_data_type type) {
     }
 }
 
-void gl_vertex_array::add_vertex_buffer(const vertex_buffer &vert_buffer) {
-    ASSERT(vert_buffer.get_layout().get_elements().size(), "Vertex buffer has no layout!");
+void gl_vertex_array::add_vertex_buffer(vertex_buffer* vert_buffer) {
+    ASSERT(vert_buffer->get_layout().get_elements().size(), "Vertex buffer has no layout!");
 
     glBindVertexArray(renderer_id);
-    vert_buffer.bind();
+    vert_buffer->bind();
 
-    const auto& layout = vert_buffer.get_layout();
+    const auto& layout = vert_buffer->get_layout();
     for(int i = 0; i < layout.get_elements().size(); i++) {
         const auto& element = layout.get_elements()[i];
 

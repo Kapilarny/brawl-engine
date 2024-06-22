@@ -3,6 +3,7 @@
 #include "defines.h"
 #include "core/logger.h"
 #include "memory/bvector.h"
+#include "memory/ptr_wrap.h"
 
 // This code is **highly** inspired by TheCherno's Hazel Engine
 
@@ -95,10 +96,10 @@ public:
     virtual void set_data(const void* data, u32 size) = 0;
 
     [[nodiscard]] virtual const buffer_layout& get_layout() const = 0;
-    virtual void set_layout(const buffer_layout& layout) = 0;
+    virtual void set_layout(buffer_layout layout) = 0;
 
-    static vertex_buffer* create(u32 size);
-    static vertex_buffer* create(f32* vertices, u32 size);
+    static ptr_wrap<vertex_buffer> create(u32 size);
+    static ptr_wrap<vertex_buffer> create(f32* vertices, u32 size);
 };
 
 class index_buffer {
@@ -110,7 +111,7 @@ public:
 
     [[nodiscard]] virtual u32 get_count() const = 0;
 
-    static index_buffer* create(u32* indices, u32 count);
+    static ptr_wrap<index_buffer> create(u32* indices, u32 count);
 };
 
 #endif //BUFFERS_H
