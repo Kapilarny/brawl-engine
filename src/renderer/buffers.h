@@ -69,7 +69,9 @@ public:
     explicit buffer_layout(const bvector<buffer_element>& elements) : elements(elements) {
         u32 offset = 0;
         stride = 0;
-        for (auto& element : elements) {
+
+        for(int i = 0; i < elements.size(); i++) {
+            auto element = elements[i];
             element.offset = offset;
             offset += element.size;
             stride += element.size;
@@ -84,6 +86,7 @@ private:
 };
 
 class vertex_buffer {
+public:
     virtual ~vertex_buffer() = default;
 
     virtual void bind() const = 0;
@@ -99,6 +102,7 @@ class vertex_buffer {
 };
 
 class index_buffer {
+public:
     virtual ~index_buffer() = default;
 
     virtual void bind() const = 0;

@@ -5,17 +5,17 @@
 
 static RENDERER_API API{};
 
-renderer_frontend* create_renderer(RENDERER_API api, window& window) {
+ptr_wrap<renderer_frontend> create_renderer(RENDERER_API api, window& window) {
     API = api;
 
     switch (api) {
         case RENDERER_API::OPENGL:
-            return new gl_backend(window);
+            return ptr_wrap<renderer_frontend>(new gl_backend(window));
         default:
             FATAL_ERROR("Unknown renderer!");
     }
 
-    return nullptr;
+    return {};
 }
 
 RENDERER_API get_renderer_api() {

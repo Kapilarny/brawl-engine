@@ -70,5 +70,6 @@ private:
 
         return std::static_pointer_cast<component_array<T>>(component_arrays[type_name]);
     }
+};
 
 #endif //COMPONENT_MANAGER_H

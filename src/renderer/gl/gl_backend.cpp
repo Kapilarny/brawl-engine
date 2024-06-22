@@ -26,7 +26,7 @@ gl_backend::gl_backend(window &window): renderer_frontend(window) {
     window.set_framebuffer_callback(on_resize);
 
     // Load shaders
-    shader.create("../shaders/test_shader.vert", "../shaders/test_shader.frag");
+    // shader.create("../shaders/test_shader.vert", "../shaders/test_shader.frag");
 
     float vertices[] = {
         // positions         // colors           // texture coords
@@ -81,9 +81,9 @@ gl_backend::gl_backend(window &window): renderer_frontend(window) {
     face.load_file("../resources/awesomeface.png", texture_format::RGBA);
 
     // Set proper texture units
-    shader.use(); // Don't forget to activate the shader before setting uniforms!
-    shader.set_i32("texture1", 0);
-    shader.set_i32("texture2", 1);
+    // shader.use(); // Don't forget to activate the shader before setting uniforms!
+    // shader.set_i32("texture1", 0);
+    // shader.set_i32("texture2", 1);
 }
 
 gl_backend::~gl_backend() {
@@ -94,7 +94,9 @@ gl_backend::~gl_backend() {
     BINFO("Destroyed GL Backend!");
 }
 
-void gl_backend::render() {
+void gl_backend::begin_render() {
+    ASSERT(drawing, "Already drawing!");
+
     glClearColor(clear_color.r, clear_color.g, clear_color.b, clear_color.a);
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -104,7 +106,7 @@ void gl_backend::render() {
     container.bind(0);
     face.bind(1);
 
-    shader.use();
+    // shader.use();
 
     auto model = glm::mat4(1.0f);
     auto view = glm::mat4(1.0f);
@@ -114,25 +116,31 @@ void gl_backend::render() {
     view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
     projection = glm::perspective(glm::radians(45.0f), (f32)wnd.get_width() / (f32)wnd.get_height(), 0.1f, 100.0f);
 
-    shader.set_mat4("model", model);
-    shader.set_mat4("view", view);
-    shader.set_mat4("projection", projection);
+    // shader.set_mat4("model", model);
+    // shader.set_mat4("view", view);
+    // shader.set_mat4("projection", projection);
 
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     // glDrawArrays(GL_TRIANGLES, 0, 3);
-
-    drawing = false;
-
-    wnd.swap_buffers();
 }
 
-void gl_backend::draw_indexed(u32 vao, u32 ebo, u32 index_count) {
+void gl_backend::end_render() {
+    ASSERT(!drawing, "Not drawing!");
 
+    wnd.swap_buffers();
+
+    drawing = false;
 }
 
 void gl_backend::set_viewport(u32 x, u32 y, u32 width, u32 height) {
     glViewport(x, y, width, height);
+}
+
+void gl_backend::draw_indexed(vertex_array *vertex_array, u32 index_count) {
+    vertex_array->bind();
+    u32 count = index_count ? index_count : vertex_array->get_index_buffer()->get_count();
+    glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr);
 }
 
 const char *gl_backend::get_name() {

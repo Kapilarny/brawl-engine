@@ -5,17 +5,17 @@
 #include "core/logger.h"
 #include "platform/platform.h"
 
-bool gl_shader::create(const char *vertex_shader, const char *fragment_shader) {
+gl_shader::gl_shader(const char *vertex_shader, const char *fragment_shader) {
     file_handle vertex_file{};
     if(!vertex_file.open(vertex_shader)) {
         BERROR("Failed to open vertex shader file: %s", vertex_shader);
-        return false;
+        return;
     }
 
     file_handle fragment_file{};
     if(!fragment_file.open(fragment_shader)) {
         BERROR("Failed to open fragment shader file: %s", fragment_shader);
-        return false;
+        return;
     }
 
     bvector<u8> vertex_bytes = vertex_file.read_bytes();
@@ -39,7 +39,7 @@ bool gl_shader::create(const char *vertex_shader, const char *fragment_shader) {
         char info_log[512];
         glGetShaderInfoLog(vert_id, 512, nullptr, info_log);
         BERROR("Failed to compile vertex shader: %s", info_log);
-        return false;
+        return;
     }
 
     // Fragment shader
@@ -53,7 +53,7 @@ bool gl_shader::create(const char *vertex_shader, const char *fragment_shader) {
         char info_log[512];
         glGetShaderInfoLog(frag_id, 512, nullptr, info_log);
         BERROR("Failed to compile fragment shader: %s", info_log);
-        return false;
+        return;
     }
 
     program = glCreateProgram();
@@ -68,20 +68,59 @@ bool gl_shader::create(const char *vertex_shader, const char *fragment_shader) {
         char info_log[512];
         glGetProgramInfoLog(program, 512, nullptr, info_log);
         BERROR("Failed to link shader program: %s", info_log);
-        return false;
+        return;
     }
 
     glDeleteShader(vert_id);
     glDeleteShader(frag_id);
-
-    return true;
 }
 
 gl_shader::~gl_shader() {
     if(program) glDeleteProgram(program);
 }
 
-void gl_shader::use() const {
+void gl_shader::set_i32(const char *name, i32 value) {
+    glUniform1i(glGetUniformLocation(program, name), value);
+}
+
+
+void gl_shader::set_u32(const char *name, u32 value) {
+    glUniform1ui(glGetUniformLocation(program, name), value);
+}
+
+void gl_shader::set_f32(const char *name, f32 value) {
+    glUniform1f(glGetUniformLocation(program, name), value);
+}
+
+void gl_shader::set_bool(const char *name, bool value) {
+    glUniform1f(glGetUniformLocation(program, name), value);
+}
+
+void gl_shader::set_vec2(const char *name, const glm::vec2& value) {
+    glUniform2fv(glGetUniformLocation(program, name), 1, &value[0]);
+}
+
+void gl_shader::set_vec3(const char *name, const glm::vec3& value) {
+    glUniform3fv(glGetUniformLocation(program, name), 1, &value[0]);
+}
+
+void gl_shader::set_vec4(const char *name, const glm::vec4& value) {
+    glUniform4fv(glGetUniformLocation(program, name), 1, &value[0]);
+}
+
+void gl_shader::set_mat2(const char *name, const glm::mat2& value) {
+    glUniformMatrix2fv(glGetUniformLocation(program, name), 1, GL_FALSE, &value[0][0]);
+}
+
+void gl_shader::set_mat3(const char *name, const glm::mat3& value) {
+    glUniformMatrix3fv(glGetUniformLocation(program, name), 1, GL_FALSE, &value[0][0]);
+}
+
+void gl_shader::set_mat4(const char* name, const glm::mat4& value) {
+    glUniformMatrix4fv(glGetUniformLocation(program, name), 1, GL_FALSE, &value[0][0]);
+}
+
+void gl_shader::bind() const {
     if(!program) {
         BERROR("Trying to use a shader which is not loaded!");
         return;
@@ -90,42 +129,6 @@ void gl_shader::use() const {
     glUseProgram(program);
 }
 
-void gl_shader::set_i32(const char *name, i32 value) const {
-    glUniform1i(glGetUniformLocation(program, name), value);
-}
-
-void gl_shader::set_u32(const char *name, u32 value) const {
-    glUniform1ui(glGetUniformLocation(program, name), value);
-}
-
-void gl_shader::set_f32(const char *name, f32 value) const {
-    glUniform1f(glGetUniformLocation(program, name), value);
-}
-
-void gl_shader::set_bool(const char *name, bool value) const {
-    glUniform1f(glGetUniformLocation(program, name), value);
-}
-
-void gl_shader::set_vec2(const char *name, const f32 *value) const {
-    glUniform2fv(glGetUniformLocation(program, name), 1, &value[0]);
-}
-
-void gl_shader::set_vec3(const char *name, const f32 *value) const {
-    glUniform3fv(glGetUniformLocation(program, name), 1, &value[0]);
-}
-
-void gl_shader::set_vec4(const char *name, const f32* value) const {
-    glUniform4fv(glGetUniformLocation(program, name), 1, &value[0]);
-}
-
-void gl_shader::set_mat2(const char *name, const glm::mat2& value) const {
-    glUniformMatrix2fv(glGetUniformLocation(program, name), 1, GL_FALSE, &value[0][0]);
-}
-
-void gl_shader::set_mat3(const char *name, const glm::mat3& value) const {
-    glUniformMatrix3fv(glGetUniformLocation(program, name), 1, GL_FALSE, &value[0][0]);
-}
-
-void gl_shader::set_mat4(const char* name, const glm::mat4& value) const {
-    glUniformMatrix4fv(glGetUniformLocation(program, name), 1, GL_FALSE, &value[0][0]);
+void gl_shader::unbind() const {
+    glUseProgram(0);
 }

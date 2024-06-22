@@ -10,18 +10,20 @@ public:
     explicit gl_backend(window& window);
     ~gl_backend() override;
 
-    void render() override;
+    void begin_render() override;
+    void end_render() override;
 
-    void draw_indexed(u32 vao, u32 ebo, u32 index_count) override;
     void set_clear_color(glm::vec4& color) override { clear_color = color; }
     void set_viewport(u32 x, u32 y, u32 width, u32 height) override;
+
+    void draw_indexed(vertex_array* vertex_array, u32 index_count) override;
 
     const char* get_name() override;
 private:
     bool drawing = false;
     u32 vbo{}, vao{}, ebo{};
     glm::vec4 clear_color{};
-    gl_shader shader;
+    // gl_shader shader;
     gl_texture container{}, face{};
 };
 
