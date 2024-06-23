@@ -37,7 +37,7 @@ protected:
  * @param window Window to render to
  * @return Pointer to renderer frontend
  */
-ptr_wrap<renderer_frontend> create_renderer(RENDERER_API api, window& window);
+renderer_frontend* create_renderer(RENDERER_API api, window& window);
 
 RENDERER_API get_renderer_api();
 

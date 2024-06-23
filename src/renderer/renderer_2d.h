@@ -22,9 +22,9 @@ public:
     void set_clear_color(glm::vec4& color) const;
 private:
     ptr_wrap<renderer_frontend> renderer;
-    ptr_wrap<shader> quad_shader;
+    shader* quad_shader;
 
-    ptr_wrap<vertex_array> quad_vertex_array;
+    vertex_array* quad_vertex_array;
     window& wnd;
 };
 

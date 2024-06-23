@@ -18,6 +18,6 @@ public:
     [[nodiscard]] virtual const index_buffer* get_index_buffer() const = 0;
 };
 
-ptr_wrap<vertex_array> create_vertex_array();
+vertex_array* create_vertex_array();
 
 #endif //VERTEX_ARRAY_H

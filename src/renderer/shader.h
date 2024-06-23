@@ -29,6 +29,6 @@ public:
     virtual void set_mat4(const char* name, const glm::mat4& value) = 0;
 };
 
-ptr_wrap<shader> create_shader(const char* vertex_src, const char* fragment_src);
+shader* create_shader(const char* vertex_src, const char* fragment_src);
 
 #endif //SHADER_H

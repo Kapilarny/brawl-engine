@@ -100,8 +100,8 @@ public:
     [[nodiscard]] virtual const buffer_layout& get_layout() const = 0;
     virtual void set_layout(const buffer_layout& layout) = 0;
 
-    static ptr_wrap<vertex_buffer> create(u32 size);
-    static ptr_wrap<vertex_buffer> create(f32* vertices, u32 size);
+    static vertex_buffer* create(u32 size);
+    static vertex_buffer* create(f32* vertices, u32 size);
 };
 
 class index_buffer {
@@ -113,7 +113,7 @@ public:
 
     [[nodiscard]] virtual u32 get_count() const = 0;
 
-    static ptr_wrap<index_buffer> create(u32* indices, u32 count);
+    static index_buffer* create(u32* indices, u32 count);
 };
 
 #endif //BUFFERS_H

@@ -15,6 +15,6 @@ public:
     virtual void bind(u32 texture_id) = 0;
 };
 
-ptr_wrap<texture> create_texture(const char* file_path, texture_format format);
+texture* create_texture(const char* file_path, texture_format format);
 
 #endif //TEXTURE_H

@@ -15,12 +15,21 @@ int main() {
     glm::vec4 color = {1.0f, 0.0f, 0.0f, 1.0f};
     rend.set_clear_color(color);
 
+    glm::vec2 pos = {0, 0};
+    i32 multiplier = 1;
+    texture* tex = create_texture("../resources/awesomeface.png", texture_format::RGBA);
     while(!w.should_close()) {
         w.poll_events();
 
+        if(pos.x >= 1.5 || pos.x <= -1.5) {
+            multiplier *= -1;
+        }
+
+        pos.x += 0.001 * multiplier;
+
         rend.begin();
 
-        rend.draw_quad({10.f, 10.f}, {1, 1}, nullptr);\
+        rend.draw_quad(pos, {1, 1}, tex);
 
         rend.end();
     }

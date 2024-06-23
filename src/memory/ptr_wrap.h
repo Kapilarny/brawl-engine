@@ -3,12 +3,19 @@
 
 #include <memory> // TODO: Remove this
 
+#include "core/logger.h"
+
 template <typename T>
 class ptr_wrap {
 public:
     ptr_wrap() = default;
     ptr_wrap(T* ptr) : ptr(ptr) {}
-    ~ptr_wrap() { delete ptr; }
+    ~ptr_wrap() {
+        if(ptr) {
+            BINFO("Deleting ptr!");
+            delete ptr;
+        }
+    }
 
     T* get() const { return ptr; }
     T* operator->() const { return ptr; }
