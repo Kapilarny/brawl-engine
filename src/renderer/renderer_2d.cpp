@@ -17,8 +17,8 @@ renderer_2d::renderer_2d(window &window, RENDERER_API api) : renderer(create_ren
 
     auto vert_buff = vertex_buffer::create(verts, sizeof(verts));
     vert_buff->set_layout(buffer_layout({
-         {shader_data_type::FLOAT3, "a_position"},
-          {shader_data_type::FLOAT2, "a_tex_coords"}
+        { shader_data_type::FLOAT3, "position" },
+        { shader_data_type::FLOAT2, "texcoord" }
     }));
 
     u32 indices[] = {
@@ -37,7 +37,7 @@ void renderer_2d::draw_quad(glm::vec2 &position, glm::vec2 &size, glm::vec4 &col
 
 }
 
-void renderer_2d::draw_quad(glm::vec2 &position, glm::vec2 &size, texture *texture) {\
+void renderer_2d::draw_quad(glm::vec2 position, glm::vec2 size, texture *texture) {
     auto model = glm::mat4(1.0f);
     auto view = glm::mat4(1.0f);
     auto projection = glm::mat4(1.0f);
@@ -46,7 +46,12 @@ void renderer_2d::draw_quad(glm::vec2 &position, glm::vec2 &size, texture *textu
     view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
     projection = glm::perspective(glm::radians(45.0f), (f32)wnd.get_width() / (f32)wnd.get_height(), 0.1f, 100.0f);
 
+    quad_shader->bind();
+    quad_shader->set_mat4("model", model);
+    quad_shader->set_mat4("view", view);
+    quad_shader->set_mat4("projection", projection);
 
+    renderer->draw_indexed(quad_vertex_array.get(), 6);
 }
 
 void renderer_2d::begin() {

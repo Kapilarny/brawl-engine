@@ -19,6 +19,9 @@ int main() {
         w.poll_events();
 
         rend.begin();
+
+        rend.draw_quad({10.f, 10.f}, {1, 1}, nullptr);\
+
         rend.end();
     }
 

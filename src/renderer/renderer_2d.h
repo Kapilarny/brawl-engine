@@ -15,7 +15,7 @@ public:
     void end();
 
     void draw_quad(glm::vec2& position, glm::vec2& size, glm::vec4& color);
-    void draw_quad(glm::vec2& position, glm::vec2& size, texture* texture);
+    void draw_quad(glm::vec2 position, glm::vec2 size, texture* texture);
 
     [[nodiscard]] const char* get_backend_name() const { return renderer->get_name(); }
 

@@ -1,5 +1,7 @@
 #ifndef BUFFERS_H
 #define BUFFERS_H
+#include <vector>
+
 #include "defines.h"
 #include "core/logger.h"
 #include "memory/bvector.h"
@@ -67,7 +69,7 @@ class buffer_layout {
 public:
     buffer_layout() = default;
 
-    explicit buffer_layout(const bvector<buffer_element>& elements) : elements(elements) {
+    explicit buffer_layout(std::vector<buffer_element> elements) : elements(elements) {
         u32 offset = 0;
         stride = 0;
 
@@ -80,9 +82,9 @@ public:
     }
 
     [[nodiscard]] u32 get_stride() const { return stride; }
-    [[nodiscard]] const bvector<buffer_element>& get_elements() const { return elements; }
+    [[nodiscard]] const std::vector<buffer_element>& get_elements() const { return elements; }
 private:
-    bvector<buffer_element> elements;
+    std::vector<buffer_element> elements;
     u32 stride = 0;
 };
 
@@ -96,7 +98,7 @@ public:
     virtual void set_data(const void* data, u32 size) = 0;
 
     [[nodiscard]] virtual const buffer_layout& get_layout() const = 0;
-    virtual void set_layout(buffer_layout layout) = 0;
+    virtual void set_layout(const buffer_layout& layout) = 0;
 
     static ptr_wrap<vertex_buffer> create(u32 size);
     static ptr_wrap<vertex_buffer> create(f32* vertices, u32 size);

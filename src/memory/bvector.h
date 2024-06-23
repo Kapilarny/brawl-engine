@@ -24,7 +24,7 @@ public:
         bzero_memory(data_ptr, capacity * sizeof(T));
     }
 
-    ~bvector() { delete[] data_ptr; }
+    ~bvector() { if(data_ptr) delete[] data_ptr; }
 
     void push_back(T value) {
         if(count >= capacity) {
