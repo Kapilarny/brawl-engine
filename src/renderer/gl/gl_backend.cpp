@@ -23,6 +23,8 @@ gl_backend::gl_backend(window &window): renderer_frontend(window) {
     BINFO("Loaded OpenGL %d.%d", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
 
     glViewport(0, 0, window.get_width(), window.get_height());
+
+
     window.set_framebuffer_callback(on_resize);
 }
 
@@ -49,6 +51,15 @@ void gl_backend::end_render() {
     wnd.swap_buffers();
 
     drawing = false;
+}
+
+void gl_backend::set_blending(bool blend) {
+    if(blend) {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    } else {
+        glDisable(GL_BLEND);
+    }
 }
 
 void gl_backend::set_viewport(u32 x, u32 y, u32 width, u32 height) {

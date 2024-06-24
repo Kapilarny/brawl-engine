@@ -6,9 +6,11 @@
 
 renderer_2d::renderer_2d(window &window, RENDERER_API api) : renderer(create_renderer(api, window)), wnd(window) {
     quad_vertex_array = create_vertex_array();
+    cam = camera();
+    cam.set_position(0, 0, -3);
 
     float verts[] = {
-        // positions         // texture coords
+         // positions          // texture coords
          0.5f,  0.5f,  0.0f,   1.0f, 1.0f,   // top right
          0.5f, -0.5f,  0.0f,   1.0f, 0.0f,   // bottom right
         -0.5f, -0.5f,  0.0f,   0.0f, 0.0f,   // bottom left
@@ -44,7 +46,7 @@ void renderer_2d::draw_quad(glm::vec2 position, glm::vec2 size, texture *tex) {
 
     model = glm::translate(model, {position.x, position.y,0});
     model = glm::scale(model, {size.x, size.y, 0});
-    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+    view = glm::translate(view, glm::vec3(cam.get_x(), cam.get_y(), cam.get_z()));
     projection = glm::perspective(glm::radians(45.0f), (f32)wnd.get_width() / (f32)wnd.get_height(), 0.1f, 100.0f);
 
     tex->bind(0);
@@ -64,6 +66,10 @@ void renderer_2d::begin() {
 
 void renderer_2d::end() {
     renderer->end_render();
+}
+
+void renderer_2d::set_blending(bool blend) {
+    renderer->set_blending(blend);
 }
 
 void renderer_2d::set_clear_color(glm::vec4 &color) const {

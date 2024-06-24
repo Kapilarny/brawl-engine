@@ -13,6 +13,7 @@ public:
     void begin_render() override;
     void end_render() override;
 
+    void set_blending(bool blend) override;
     void set_clear_color(glm::vec4& color) override { clear_color = color; }
     void set_viewport(u32 x, u32 y, u32 width, u32 height) override;
 

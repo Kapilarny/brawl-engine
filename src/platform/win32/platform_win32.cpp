@@ -56,6 +56,10 @@ f64 platform_get_absolute_time() {
     return glfwGetTime();
 }
 
+void platform_sleep(u64 ms) {
+    Sleep(ms);
+}
+
 file_handle::~file_handle() {
     close();
 }

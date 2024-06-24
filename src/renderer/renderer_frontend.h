@@ -23,6 +23,7 @@ public:
 
     virtual void set_clear_color(glm::vec4& color) = 0;
 
+    virtual void set_blending(bool blend) = 0;
     virtual void draw_indexed(vertex_array* vertex_array, u32 index_count) = 0;
 
     virtual void set_viewport(u32 x, u32 y, u32 width, u32 height) = 0;
