@@ -16,7 +16,7 @@ public:
         }
     }
 
-    bvector(u64 initial_capacity) {
+    explicit bvector(u64 initial_capacity) {
         capacity = initial_capacity;
         count = initial_capacity;
 
@@ -24,7 +24,7 @@ public:
         bzero_memory(data_ptr, capacity * sizeof(T));
     }
 
-    ~bvector() { if(data_ptr) delete[] data_ptr; }
+    ~bvector() { delete[] data_ptr; }
 
     void push_back(T value) {
         if(count >= capacity) {
@@ -61,6 +61,11 @@ public:
     T& operator[](u64 index) {
         return data_ptr[index];
     }
+
+    T* begin() { return data_ptr; }
+    const T* begin() const { return data_ptr; }
+    T* end() { return data_ptr + count; }
+    const T* end() const { return data_ptr + count; }
 
     [[nodiscard]] u64 size() const { return count; }
     [[nodiscard]] u64 get_capacity() const { return capacity; }

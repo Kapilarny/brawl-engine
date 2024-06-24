@@ -31,7 +31,7 @@ void gl_vertex_buffer::set_data(const void *data, u32 size) {
     glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
 }
 
-gl_index_buffer::gl_index_buffer(u32 *indices, u32 count) {
+gl_index_buffer::gl_index_buffer(u32 *indices, u32 count) : count(count) {
     glGenBuffers(1, &renderer_id);
 
     // GL_ELEMENT_ARRAY_BUFFER is not valid without an actively bound VAO

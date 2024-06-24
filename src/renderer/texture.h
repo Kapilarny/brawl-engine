@@ -13,6 +13,7 @@ public:
     virtual ~texture() = default;
 
     virtual void bind(u32 texture_id) = 0;
+    static void set_flip_y(bool flip);
 };
 
 texture* create_texture(const char* file_path, texture_format format);

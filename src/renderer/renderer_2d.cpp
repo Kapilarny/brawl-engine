@@ -15,10 +15,10 @@ renderer_2d::renderer_2d(window &window, RENDERER_API api) : renderer(create_ren
         -0.5f,  0.5f,  0.0f,   0.0f, 1.0f
     };
 
-    ptr_wrap vert_buff = vertex_buffer::create(verts, sizeof(verts));
+    vertex_buffer* vert_buff = vertex_buffer::create(verts, sizeof(verts));
     vert_buff->set_layout(buffer_layout({
-        { shader_data_type::FLOAT3, "position" },
-        { shader_data_type::FLOAT2, "texcoord" }
+        { shader_data_type::FLOAT3, "aPos" },
+        { shader_data_type::FLOAT2, "aTexCoord" }
     }));
 
     u32 indices[] = {
@@ -26,9 +26,9 @@ renderer_2d::renderer_2d(window &window, RENDERER_API api) : renderer(create_ren
         1, 2, 3
     };
 
-    ptr_wrap index_buff = index_buffer::create(indices, sizeof(indices) / sizeof(u32));
-    quad_vertex_array->add_vertex_buffer(vert_buff.get());
-    quad_vertex_array->set_index_buffer(index_buff.get());
+    index_buffer* index_buff = index_buffer::create(indices, sizeof(indices) / sizeof(u32));
+    quad_vertex_array->add_vertex_buffer(vert_buff);
+    quad_vertex_array->set_index_buffer(index_buff);
 
     quad_shader = create_shader("../shaders/test_shader.vert", "../shaders/test_shader.frag");
 }
@@ -50,7 +50,7 @@ void renderer_2d::draw_quad(glm::vec2 position, glm::vec2 size, texture *tex) {
     tex->bind(0);
 
     quad_shader->bind();
-    quad_shader->set_u32("texture1", 0);
+    quad_shader->set_i32("texture1", 0);
     quad_shader->set_mat4("model", model);
     quad_shader->set_mat4("view", view);
     quad_shader->set_mat4("projection", projection);

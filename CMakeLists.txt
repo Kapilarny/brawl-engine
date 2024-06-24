@@ -66,5 +66,5 @@ add_executable(brawl_engine
         src/renderer/buffers.cpp
 )
 
-target_link_libraries(brawl_engine PRIVATE glfw)
+target_link_libraries(brawl_engine PRIVATE -static glfw)
 target_include_directories(brawl_engine PRIVATE src external/glad/includes external/stb external/g-truc/)

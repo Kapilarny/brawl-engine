@@ -7,6 +7,11 @@ gl_vertex_array::gl_vertex_array() {
 }
 
 gl_vertex_array::~gl_vertex_array() {
+    // Delete all vertex buffers
+    for(auto& buffer : vertex_buffers) {
+        delete buffer;
+    }
+
     glDeleteVertexArrays(1, &renderer_id);
 }
 
@@ -50,8 +55,6 @@ void gl_vertex_array::add_vertex_buffer(vertex_buffer* vert_buffer) {
     for(int i = 0; i < layout.get_elements().size(); i++) {
         const auto& element = layout.get_elements()[i];
 
-        glEnableVertexAttribArray(vertex_buffer_index);
-
         switch(element.type) {
             case shader_data_type::FLOAT:
             case shader_data_type::FLOAT2:
@@ -59,7 +62,7 @@ void gl_vertex_array::add_vertex_buffer(vertex_buffer* vert_buffer) {
             case shader_data_type::FLOAT4:
             case shader_data_type::MAT3:
             case shader_data_type::MAT4:
-                glVertexAttribPointer(vertex_buffer_index, element.get_component_count(), shader_data_type_to_gl(element.type), element.normalized ? GL_TRUE : GL_FALSE, layout.get_stride(), (const void*)element.offset);
+                glVertexAttribPointer(i, element.get_component_count(), shader_data_type_to_gl(element.type), element.normalized ? GL_TRUE : GL_FALSE, layout.get_stride(), (const void*)element.offset);
                 break;
 
             case shader_data_type::INT:
@@ -67,12 +70,16 @@ void gl_vertex_array::add_vertex_buffer(vertex_buffer* vert_buffer) {
             case shader_data_type::INT3:
             case shader_data_type::INT4:
             case shader_data_type::BOOL:
-                glVertexAttribIPointer(vertex_buffer_index, element.get_component_count(), shader_data_type_to_gl(element.type), layout.get_stride(), (const void*)element.offset);
+                glVertexAttribIPointer(i, element.get_component_count(), shader_data_type_to_gl(element.type), layout.get_stride(), (const void*)element.offset);
                 break;
 
             default: ASSERT(false, "Unknown shader data type!");
         }
+
+        glEnableVertexAttribArray(i);
     }
+
+    vertex_buffers.push_back(vert_buffer);
 }
 
 void gl_vertex_array::set_index_buffer(index_buffer* buffer) {

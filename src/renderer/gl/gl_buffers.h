@@ -32,7 +32,7 @@ public:
     [[nodiscard]] u32 get_count() const override { return count; }
 private:
     u32 renderer_id{};
-    u32 count;
+    u32 count{};
 };
 
 #endif //GL_BUFFERS_H

@@ -1,3 +1,4 @@
+#include <cmath>
 #include <iostream>
 
 #include "core/logger.h"
@@ -17,9 +18,14 @@ int main() {
 
     glm::vec2 pos = {0, 0};
     i32 multiplier = 1;
-    texture* tex = create_texture("../resources/awesomeface.png", texture_format::RGBA);
+    texture::set_flip_y(true);
+    ptr_wrap<texture> container = create_texture("../resources/container.jpg", texture_format::RGB);
+    ptr_wrap<texture> awesomeface = create_texture("../resources/awesomeface.png", texture_format::RGBA);
     while(!w.should_close()) {
         w.poll_events();
+
+        color.g = (f32)sin(platform_get_absolute_time()) / 2.0f + 0.5f;
+        rend.set_clear_color(color);
 
         if(pos.x >= 1.5 || pos.x <= -1.5) {
             multiplier *= -1;
@@ -29,7 +35,8 @@ int main() {
 
         rend.begin();
 
-        rend.draw_quad(pos, {1, 1}, tex);
+        rend.draw_quad({-pos.x, pos.y + .5f}, {1, 1}, container.get());
+        rend.draw_quad({pos.x, pos.y - .5f}, {1, 1}, awesomeface.get());
 
         rend.end();
     }

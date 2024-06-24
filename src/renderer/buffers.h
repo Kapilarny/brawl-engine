@@ -69,12 +69,13 @@ class buffer_layout {
 public:
     buffer_layout() = default;
 
-    explicit buffer_layout(std::vector<buffer_element> elements) : elements(elements) {
+    explicit buffer_layout(std::vector<buffer_element> elements) {
+        buf_elements = elements;
+
         u32 offset = 0;
         stride = 0;
 
-        for(int i = 0; i < elements.size(); i++) {
-            auto element = elements[i];
+        for(auto& element : buf_elements) {
             element.offset = offset;
             offset += element.size;
             stride += element.size;
@@ -82,9 +83,9 @@ public:
     }
 
     [[nodiscard]] u32 get_stride() const { return stride; }
-    [[nodiscard]] const std::vector<buffer_element>& get_elements() const { return elements; }
+    [[nodiscard]] const std::vector<buffer_element>& get_elements() const { return buf_elements; }
 private:
-    std::vector<buffer_element> elements;
+    std::vector<buffer_element> buf_elements;
     u32 stride = 0;
 };
 
