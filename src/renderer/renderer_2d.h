@@ -17,8 +17,10 @@ public:
 
     void set_blending(bool blend);
 
-    void draw_quad(glm::vec2& position, glm::vec2& size, glm::vec4& color);
-    void draw_quad(glm::vec2 position, glm::vec2 size, texture* texture);
+    void draw_quad(glm::vec2 position, glm::vec2 size, glm::vec4 color, f32 rotation = 0.0f);
+    void draw_quad(glm::vec2 position, glm::vec2 size, texture* texture, f32 rotation = 0.0f);
+
+    void render_text(const char* text, glm::vec2 pos, f32 scale, glm::vec4 color = {1.0f, 1.0f, 1.0f, 1.0f});
 
     [[nodiscard]] const char* get_backend_name() const { return renderer->get_name(); }
     [[nodiscard]] const camera& get_camera() const { return cam; }
@@ -28,9 +30,11 @@ public:
 private:
     camera cam;
     ptr_wrap<renderer_frontend> renderer;
-    shader* quad_shader;
+    ptr_wrap<shader> tex_quad_shader;
+    ptr_wrap<shader> color_quad_shader;
 
-    vertex_array* quad_vertex_array;
+    ptr_wrap<vertex_array> tex_quad_vertex_array;
+    ptr_wrap<vertex_array> color_quad_vertex_array;
     window& wnd;
 };
 

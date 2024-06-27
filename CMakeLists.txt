@@ -5,6 +5,17 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_subdirectory(external/glfw)
 
+set(FT_DISABLE_ZLIB TRUE)
+set(FT_DISABLE_BZIP2 TRUE)
+set(FT_DISABLE_PNG TRUE)
+set(FT_DISABLE_HARFBUZZ TRUE)
+set(FT_DISABLE_OLD_INTERNALS TRUE)
+set(FT_DISABLE_GZIP TRUE)
+set(FT_DISABLE_LZW TRUE)
+set(FT_DISABLE_BROTLI TRUE)
+
+add_subdirectory(external/freetype)
+
 add_executable(brawl_engine
         external/glad/src/gl.c
         src/main.cpp
@@ -65,11 +76,11 @@ add_executable(brawl_engine
         src/renderer/texture.h
         src/renderer/buffers.cpp
         src/platform/input.h
-
-        external/imgui/imgui.cpp
-        external/imgui/backends/imgui_impl_glfw.cpp
-        external/imgui/backends/imgui_impl_opengl3.cpp
+        src/renderer/font_manager.cpp
+        src/renderer/font_manager.h
+        src/renderer/gl/gl_font_manager.cpp
+        src/renderer/gl/gl_font_manager.h
 )
 
-target_link_libraries(brawl_engine PRIVATE -static glfw)
-target_include_directories(brawl_engine PRIVATE src external/glad/includes external/stb external/g-truc/ glm external/imgui external/imgui/backends)
+target_link_libraries(brawl_engine PRIVATE -static glfw freetype)
+target_include_directories(brawl_engine PRIVATE src external/glad/includes external/stb external/g-truc/ glm)

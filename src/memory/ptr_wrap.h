@@ -12,6 +12,13 @@ public:
     T* operator->() const { return ptr; }
     T& operator*() const { return *ptr; }
 
+    // = operator
+    ptr_wrap& operator=(T* new_ptr) {
+        delete ptr;
+        ptr = new_ptr;
+        return *this;
+    }
+
     void reset(T* new_ptr) {
         delete ptr;
         ptr = new_ptr;

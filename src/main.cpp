@@ -15,7 +15,7 @@ int main() {
     BINFO("Created renderer: %s", rend.get_backend_name());
 
     // Make the clear color red
-    glm::vec4 color = {1.0f, 0.0f, 0.0f, 1.0f};
+    glm::vec4 color = {1.0f, 1.0f, 0.0f, 1.0f};
     rend.set_clear_color(color);
 
     glm::vec2 pos = {0, 1};
@@ -69,7 +69,8 @@ int main() {
         // rend.draw_quad({-pos.x, pos.y + .5f}, {1, 1}, container.get());
         // rend.draw_quad({pos.x, pos.y - .5f}, {1, 1}, awesomeface.get());
 
-        rend.draw_quad(pos, {1, 1}, container.get());
+        rend.draw_quad(pos, {1, 1}, container.get(), 45);
+        rend.draw_quad({0, 0}, {1, 1}, {1, 0, 0, 1});
 
         rend.end();
 

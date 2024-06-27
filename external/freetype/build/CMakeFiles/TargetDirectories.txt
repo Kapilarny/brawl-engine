@@ -1,0 +1,5 @@
+C:/Users/user/CLionProjects/brawl-engine/external/freetype/build/CMakeFiles/freetype.dir
+C:/Users/user/CLionProjects/brawl-engine/external/freetype/build/CMakeFiles/PACKAGE.dir
+C:/Users/user/CLionProjects/brawl-engine/external/freetype/build/CMakeFiles/INSTALL.dir
+C:/Users/user/CLionProjects/brawl-engine/external/freetype/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/user/CLionProjects/brawl-engine/external/freetype/build/CMakeFiles/ZERO_CHECK.dir

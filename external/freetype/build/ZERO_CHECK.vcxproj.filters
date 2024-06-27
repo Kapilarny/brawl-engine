@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\user\CLionProjects\brawl-engine\external\freetype\build\CMakeFiles\f5bff9dd9249d16d1b36491b045da957\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{5B6B9C40-3275-3ACB-B37C-990202E6E4FE}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
