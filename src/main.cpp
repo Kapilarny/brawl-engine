@@ -1,6 +1,7 @@
 #include <cmath>
 #include <iostream>
 
+#include "core/bclock.h"
 #include "core/logger.h"
 #include "platform/platform.h"
 #include "renderer/renderer_2d.h"
@@ -24,42 +25,51 @@ int main() {
     ptr_wrap<texture> container = create_texture("../resources/container.jpg", texture_format::RGB);
     ptr_wrap<texture> awesomeface = create_texture("../resources/awesomeface.png", texture_format::RGBA);
 
-    f64 last_time = platform_get_absolute_time();
     u64 frame_count = 0;
-
     f64 target_frame_time = 1.0 / 60.0;
+    bclock delta_clock; // Classic me, forgot that i implemented a clock class
+
+    f64 speed = 3.0;
+
     while(!w.should_close()) {
         // Calculate delta time
-        f64 current_time = platform_get_absolute_time();
-        f64 delta_time = current_time - last_time;
-        last_time = current_time;
+        delta_clock.update();
+        f64 delta_time = delta_clock.get_elapsed();
+        delta_clock.start();
 
         w.poll_events();
 
-        color.g = (f32)sin(platform_get_absolute_time()) / 2.0f + 0.5f;
-        rend.set_clear_color(color);
-
-        if(pos.x >= 1.5 || pos.x <= -1.5) {
-            multiplier *= -1;
+        // Input
+        if(platform_input_key_down(Key::ESCAPE)) {
+            w.set_should_close(true);
+            continue;
         }
 
-        pos.x += 3 * delta_time * multiplier;
+        if(platform_input_key_down(Key::W)) {
+            pos.y += speed * delta_time;
+        }
+
+        if(platform_input_key_down(Key::S)) {
+            pos.y -= speed * delta_time;
+        }
+
+        if(platform_input_key_down(Key::A)) {
+            pos.x -= speed * delta_time;
+        }
+
+        if(platform_input_key_down(Key::D)) {
+            pos.x += speed * delta_time;
+        }
 
         rend.begin();
 
         camera& cam = rend.get_camera();
         // cam.set_position(0, 0, cam.get_z() + (multiplier * 3 * delta_time));
 
-        for(int i = 0; i < 10; i++) {
-            for(int j = 0; j < 10; j++) {
-                rend.draw_quad({pos.x + i * 0.25, pos.y - j * 0.25}, {0.2, 0.2}, container.get());
-            }
-        }
-
         // rend.draw_quad({-pos.x, pos.y + .5f}, {1, 1}, container.get());
         // rend.draw_quad({pos.x, pos.y - .5f}, {1, 1}, awesomeface.get());
 
-        // rend.draw_quad({1, 0}, {1, 1}, container.get());
+        rend.draw_quad(pos, {1, 1}, container.get());
 
         rend.end();
 

@@ -8,6 +8,16 @@
 
 #include "core/logger.h"
 
+// TODO: Cant make this work yet, need to figure it out more properly
+
+// i32 curr_keys[GLFW_KEY_LAST] = {};
+// i32 last_keys[GLFW_KEY_LAST] = {};
+// void key_callback(GLFWwindow* window, i32 key, i32 scancode, i32 action, i32 mods) {
+//     last_keys[key] = curr_keys[key];
+//     curr_keys[key] = action;
+// }
+
+
 window::window(const char *title, u32 width, u32 height): width(width), height(height), internal_handle(nullptr) {
     if(!glfwInit()) {
         FATAL_ERROR("Failed to initialize GLFW");
@@ -25,15 +35,7 @@ window::window(const char *title, u32 width, u32 height): width(width), height(h
     }
 
     glfwMakeContextCurrent((GLFWwindow*)internal_handle);
-}
-
-void platform_log_output(const char* msg, LOG_LEVEL level) {
-    constexpr u8 level_colors[6] = {64, 4, 6, 2, 1, 8};
-
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleTextAttribute(hConsole, level_colors[(u32)level]);
-
-    WriteConsoleA(hConsole, msg, strlen(msg), NULL, NULL);
+    // glfwSetKeyCallback((GLFWwindow*)internal_handle, key_callback);
 }
 
 void window::poll_events() {
@@ -44,20 +46,16 @@ bool window::should_close() {
     return glfwWindowShouldClose((GLFWwindow*)internal_handle);
 }
 
+void window::set_should_close(bool value) const {
+     glfwSetWindowShouldClose((GLFWwindow*)internal_handle, value);
+}
+
 void window::swap_buffers() const {
     glfwSwapBuffers((GLFWwindow*)internal_handle);
 }
 
 void window::set_framebuffer_callback(void(*callback)(void*, u32, u32)) {
     glfwSetFramebufferSizeCallback((GLFWwindow*)internal_handle, (GLFWframebuffersizefun)callback);
-}
-
-f64 platform_get_absolute_time() {
-    return glfwGetTime();
-}
-
-void platform_sleep(u64 ms) {
-    Sleep(ms);
 }
 
 file_handle::~file_handle() {
@@ -98,6 +96,31 @@ bvector<u8> file_handle::read_bytes() {
     return data;
 }
 
+void platform_log_output(const char* msg, LOG_LEVEL level) {
+    constexpr u8 level_colors[6] = {64, 4, 6, 2, 1, 8};
+
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole, level_colors[(u32)level]);
+
+    WriteConsoleA(hConsole, msg, strlen(msg), NULL, NULL);
+}
+
+f64 platform_get_absolute_time() {
+    return glfwGetTime();
+}
+
+void platform_sleep(u64 ms) {
+    Sleep(ms);
+}
+
 void* platform_get_proc_address_ptr() {
     return (void*)glfwGetProcAddress;
+}
+
+bool platform_input_key_down(Key key) {
+    return glfwGetKey((GLFWwindow*)glfwGetCurrentContext(), (i32)key) == GLFW_PRESS;
+}
+
+bool platform_input_key_up(Key key) {
+    return glfwGetKey((GLFWwindow*)glfwGetCurrentContext(), (i32)key) == GLFW_RELEASE;
 }

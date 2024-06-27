@@ -64,6 +64,7 @@ add_executable(brawl_engine
         src/renderer/texture.cpp
         src/renderer/texture.h
         src/renderer/buffers.cpp
+        src/platform/input.h
 )
 
 target_link_libraries(brawl_engine PRIVATE -static glfw)
