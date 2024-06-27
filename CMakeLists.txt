@@ -65,7 +65,11 @@ add_executable(brawl_engine
         src/renderer/texture.h
         src/renderer/buffers.cpp
         src/platform/input.h
+
+        external/imgui/imgui.cpp
+        external/imgui/backends/imgui_impl_glfw.cpp
+        external/imgui/backends/imgui_impl_opengl3.cpp
 )
 
 target_link_libraries(brawl_engine PRIVATE -static glfw)
-target_include_directories(brawl_engine PRIVATE src external/glad/includes external/stb external/g-truc/)
+target_include_directories(brawl_engine PRIVATE src external/glad/includes external/stb external/g-truc/ glm external/imgui external/imgui/backends)
