@@ -1,7 +1,7 @@
 #include "logger.h"
 
 // TODO: Make this stdlib independent
-#include <stdarg.h>
+#include <cstdarg>
 #include <string> // vsprintf TODO: implement yourself
 
 #include "memory/bmemory.h"

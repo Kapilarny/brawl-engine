@@ -17,7 +17,7 @@ int main() {
     glm::vec4 color = {1.0f, 0.0f, 0.0f, 1.0f};
     rend.set_clear_color(color);
 
-    glm::vec2 pos = {0, 0};
+    glm::vec2 pos = {0, 1};
     i32 multiplier = 1;
 
     texture::set_flip_y(true);
@@ -48,10 +48,18 @@ int main() {
         rend.begin();
 
         camera& cam = rend.get_camera();
-        cam.set_position(0, 0, cam.get_z() + (multiplier * 3 * delta_time));
+        // cam.set_position(0, 0, cam.get_z() + (multiplier * 3 * delta_time));
 
-        rend.draw_quad({-pos.x, pos.y + .5f}, {1, 1}, container.get());
-        rend.draw_quad({pos.x, pos.y - .5f}, {1, 1}, awesomeface.get());
+        for(int i = 0; i < 10; i++) {
+            for(int j = 0; j < 10; j++) {
+                rend.draw_quad({pos.x + i * 0.25, pos.y - j * 0.25}, {0.2, 0.2}, container.get());
+            }
+        }
+
+        // rend.draw_quad({-pos.x, pos.y + .5f}, {1, 1}, container.get());
+        // rend.draw_quad({pos.x, pos.y - .5f}, {1, 1}, awesomeface.get());
+
+        // rend.draw_quad({1, 0}, {1, 1}, container.get());
 
         rend.end();
 

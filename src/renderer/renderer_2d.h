@@ -10,7 +10,7 @@
 
 class renderer_2d {
 public:
-    renderer_2d(window& window, RENDERER_API api);
+    renderer_2d(window& wnd_ref, RENDERER_API api);
 
     void begin();
     void end();

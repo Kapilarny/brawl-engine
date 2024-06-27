@@ -4,9 +4,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-renderer_2d::renderer_2d(window &window, RENDERER_API api) : renderer(create_renderer(api, window)), wnd(window) {
+renderer_2d::renderer_2d(window &wnd_ref, RENDERER_API api) : renderer(create_renderer(api, wnd_ref)), wnd(wnd_ref), cam(wnd_ref) {
     quad_vertex_array = create_vertex_array();
-    cam = camera();
     cam.set_position(0, 0, -3);
 
     float verts[] = {
@@ -41,13 +40,11 @@ void renderer_2d::draw_quad(glm::vec2 &position, glm::vec2 &size, glm::vec4 &col
 
 void renderer_2d::draw_quad(glm::vec2 position, glm::vec2 size, texture *tex) {
     auto model = glm::mat4(1.0f);
-    auto view = glm::mat4(1.0f);
-    auto projection = glm::mat4(1.0f);
+    auto view = cam.get_view();
+    auto projection = cam.get_projection();
 
     model = glm::translate(model, {position.x, position.y,0});
     model = glm::scale(model, {size.x, size.y, 0});
-    view = glm::translate(view, glm::vec3(cam.get_x(), cam.get_y(), cam.get_z()));
-    projection = glm::perspective(glm::radians(45.0f), (f32)wnd.get_width() / (f32)wnd.get_height(), 0.1f, 100.0f);
 
     tex->bind(0);
 
