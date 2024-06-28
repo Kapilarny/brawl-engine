@@ -4,8 +4,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-renderer_2d::renderer_2d(window &wnd_ref, RENDERER_API api) : cam(wnd_ref), renderer(create_renderer(api, wnd_ref)), wnd(wnd_ref) {
-    cam.set_position(0, 0, -3);
+renderer_2d::renderer_2d(window &wnd_ref, RENDERER_API api) : renderer(create_renderer(api, wnd_ref)), wnd(wnd_ref) {
+    cam = camera_2d(renderer.get());
 
     // tex_quad_vertex_array
     {
@@ -13,15 +13,15 @@ renderer_2d::renderer_2d(window &wnd_ref, RENDERER_API api) : cam(wnd_ref), rend
 
         float verts[] = {
             // positions          // texture coords
-            0.5f,  0.5f,  0.0f,   1.0f, 1.0f,   // top right
-            0.5f, -0.5f,  0.0f,   1.0f, 0.0f,   // bottom right
-           -0.5f, -0.5f,  0.0f,   0.0f, 0.0f,   // bottom left
-           -0.5f,  0.5f,  0.0f,   0.0f, 1.0f
+            0.5f,  0.5f,  1.0f, 1.0f,   // top right
+            0.5f, -0.5f,  1.0f, 0.0f,   // bottom right
+           -0.5f, -0.5f,  0.0f, 0.0f,   // bottom left
+           -0.5f,  0.5f,  0.0f, 1.0f
        };
 
         vertex_buffer* vert_buff = vertex_buffer::create(verts, sizeof(verts));
         vert_buff->set_layout(buffer_layout({
-            { shader_data_type::FLOAT3, "aPos" },
+            { shader_data_type::FLOAT2, "aPos" },
             { shader_data_type::FLOAT2, "aTexCoord" }
         }));
 
@@ -42,15 +42,15 @@ renderer_2d::renderer_2d(window &wnd_ref, RENDERER_API api) : cam(wnd_ref), rend
 
         float verts[] = {
             // positions
-            0.5f,  0.5f,  0.0f,
-            0.5f, -0.5f,  0.0f,
-           -0.5f, -0.5f,  0.0f,
-           -0.5f,  0.5f,  0.0f,
+            0.5f,  0.5f,
+            0.5f, -0.5f,
+           -0.5f, -0.5f,
+           -0.5f,  0.5f,
        };
 
         vertex_buffer* vert_buff = vertex_buffer::create(verts, sizeof(verts));
         vert_buff->set_layout(buffer_layout({
-            { shader_data_type::FLOAT3, "aPos" }
+            { shader_data_type::FLOAT2, "aPos" }
         }));
 
         u32 indices[] = {
@@ -68,7 +68,7 @@ renderer_2d::renderer_2d(window &wnd_ref, RENDERER_API api) : cam(wnd_ref), rend
 
 void renderer_2d::draw_quad(glm::vec2 position, glm::vec2 size, glm::vec4 color, f32 rotation) {
     auto model = glm::mat4(1.0f);
-    auto view = cam.get_view();
+    // auto view = cam.get_view();
     auto projection = cam.get_projection();
 
     model = glm::translate(model, {position.x, position.y,0});
@@ -78,7 +78,7 @@ void renderer_2d::draw_quad(glm::vec2 position, glm::vec2 size, glm::vec4 color,
     color_quad_shader->bind();
     color_quad_shader->set_vec4("color", color);
     color_quad_shader->set_mat4("model", model);
-    color_quad_shader->set_mat4("view", view);
+    // color_quad_shader->set_mat4("view", view);
     color_quad_shader->set_mat4("projection", projection);
 
     renderer->draw_indexed(color_quad_vertex_array.get(), 6);
@@ -86,7 +86,7 @@ void renderer_2d::draw_quad(glm::vec2 position, glm::vec2 size, glm::vec4 color,
 
 void renderer_2d::draw_quad(glm::vec2 position, glm::vec2 size, texture *tex, f32 rotation) {
     auto model = glm::mat4(1.0f);
-    auto view = cam.get_view();
+    // auto view = cam.get_view();
     auto projection = cam.get_projection();
 
     model = glm::translate(model, {position.x, position.y,0});
@@ -98,7 +98,7 @@ void renderer_2d::draw_quad(glm::vec2 position, glm::vec2 size, texture *tex, f3
     tex_quad_shader->bind();
     tex_quad_shader->set_i32("texture1", 0);
     tex_quad_shader->set_mat4("model", model);
-    tex_quad_shader->set_mat4("view", view);
+    // tex_quad_shader->set_mat4("view", view);
     tex_quad_shader->set_mat4("projection", projection);
 
     renderer->draw_indexed(tex_quad_vertex_array.get(), 6);

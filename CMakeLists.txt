@@ -78,6 +78,8 @@ add_executable(brawl_engine
         src/platform/input.h
         src/renderer/font_renderer.h
         src/renderer/font_renderer.cpp
+        src/core/camera_2d.cpp
+        src/core/camera_2d.h
 )
 
 target_link_libraries(brawl_engine PRIVATE -static glfw freetype)

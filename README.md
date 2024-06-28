@@ -5,6 +5,10 @@ for games. It is written in C++ but it is designed to allow the user to use Lua
 for scripting and defining game logic. The engine is designed to be used for fighting games (hence the name) but it
 should be flexible enough to be used for other types of games as well.
 
+## Chess Prototype
+
+Made it as an example for the engine. Props to [Lichess](https://github.com/lichess-org/lila/) for the assets.
+
 ## Features
 
 For now this is more of my checklist on what things i want done in order (although some things may be done out of it)

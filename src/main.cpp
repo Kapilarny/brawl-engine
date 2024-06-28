@@ -10,7 +10,7 @@
 #include "renderer/renderer_frontend.h"
 
 int main() {
-    window w("Brawl Engine", 800, 600);
+    window w("Brawl Engine", 1024, 1024);
     auto rend = renderer_2d(w, RENDERER_API::OPENGL);
     rend.set_blending(true);
 
@@ -27,13 +27,18 @@ int main() {
     ptr_wrap<texture> container = texture::create("../resources/container.jpg", texture_format::RGB);
     ptr_wrap<texture> awesomeface = texture::create("../resources/awesomeface.png", texture_format::RGBA);
 
+    ptr_wrap<texture> board = texture::create("../resources/chess/board.jpg", texture_format::RGB);
+
+    ptr_wrap pawn = texture::create("../resources/chess/bP.png", texture_format::RGB);
+
+
     font_renderer font(rend.get_backend(), "../resources/cursecasual.ttf");
 
     u64 frame_count = 0;
     f64 target_frame_time = 1.0 / 60.0 / 2; // I dont get it why i have to divide it by 2 but it works so not complaining
     bclock delta_clock; // Classic me, forgot that i implemented a clock class
 
-    f64 speed = 3.0;
+    camera_2d& cam = rend.get_camera();
 
     while(!w.should_close()) {
         // Calculate delta time
@@ -42,47 +47,16 @@ int main() {
 
         w.poll_events();
 
-        // Input
-        if(platform_input_key_down(input_key::ESCAPE)) {
-            w.set_should_close(true);
-            continue;
-        }
-
-        if(platform_input_key_down(input_key::W)) {
-            pos.y += speed * delta_time;
-        }
-
-        if(platform_input_key_down(input_key::S)) {
-            pos.y -= speed * delta_time;
-        }
-
-        if(platform_input_key_down(input_key::A)) {
-            pos.x -= speed * delta_time;
-        }
-
-        if(platform_input_key_down(input_key::D)) {
-            pos.x += speed * delta_time;
-        }
-
-        camera& cam = rend.get_camera();
-        // cam.set_position(0, 0, cam.get_z() + (multiplier * 3 * delta_time));
-
         rend.begin();
 
-        // rend.draw_quad({-pos.x, pos.y + .5f}, {1, 1}, container.get());
-        // rend.draw_quad({pos.x, pos.y - .5f}, {1, 1}, awesomeface.get());
-
-        rend.draw_quad(pos, {1, 1}, container.get(), 45);
-        // rend.draw_quad({0, 0}, {1, 1}, {1, 0, 0, 1});
-
+        rend.draw_quad({w.get_width() / 2, w.get_height() / 2}, {w.get_width(), w.get_height()}, board.get()); // Draw the board
 
         // Frame Counter
         char buffer[256] = {0};
         bzero_memory(buffer, 256 * sizeof(char));
         f64 fps = 1.0 / delta_time;
         bstrfmt(buffer, "FPS: %.0f", fps);
-        font.render_text((char*)&buffer, {10, w.get_height()-50}, 1, {0, 0, 0});
-
+        font.render_text((char*)&buffer, {0, w.get_height()-20}, .5f, {0, 0, 0});
 
         font.render_text("Brawl Engine", {10, 10}, 1, {0, 0, 0});
         rend.end();

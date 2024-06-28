@@ -7,6 +7,7 @@
 #include "shader.h"
 #include "texture.h"
 #include "core/camera.h"
+#include "core/camera_2d.h"
 
 class renderer_2d {
 public:
@@ -23,13 +24,13 @@ public:
     void render_text(const char* text, glm::vec2 pos, f32 scale, glm::vec4 color = {1.0f, 1.0f, 1.0f, 1.0f});
 
     [[nodiscard]] const char* get_backend_name() const { return renderer->get_name(); }
-    [[nodiscard]] const camera& get_camera() const { return cam; }
-    [[nodiscard]] camera& get_camera() { return cam; }
+    [[nodiscard]] const camera_2d& get_camera() const { return cam; }
+    [[nodiscard]] camera_2d& get_camera() { return cam; }
     [[nodiscard]] renderer_frontend* get_backend() const { return renderer.get(); }
 
     void set_clear_color(glm::vec4& color) const;
 private:
-    camera cam;
+    camera_2d cam;
     ptr_wrap<renderer_frontend> renderer;
     ptr_wrap<shader> tex_quad_shader;
     ptr_wrap<shader> color_quad_shader;

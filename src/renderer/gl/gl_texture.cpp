@@ -51,6 +51,8 @@ gl_texture::gl_texture(const char *file_path, texture_format format, const textu
         return;
     }
 
+    BINFO("Texture loaded: %s -> w: %d, h: %d, channels: %d", file_path, width, height, channels);
+
     load_texture(data, format, params);
 
     // Free image data
