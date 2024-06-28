@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 
 #include <windows.h>
+#include <glm/vec2.hpp>
 
 #include "core/logger.h"
 
@@ -117,10 +118,32 @@ void* platform_get_proc_address_ptr() {
     return (void*)glfwGetProcAddress;
 }
 
-bool platform_input_key_down(Key key) {
+bool platform_input_key_down(input_key key) {
     return glfwGetKey((GLFWwindow*)glfwGetCurrentContext(), (i32)key) == GLFW_PRESS;
 }
 
-bool platform_input_key_up(Key key) {
+bool platform_input_key_up(input_key key) {
     return glfwGetKey((GLFWwindow*)glfwGetCurrentContext(), (i32)key) == GLFW_RELEASE;
+}
+
+key_state platform_input_get_key_state(input_key key) {
+    return (key_state)glfwGetKey((GLFWwindow*)glfwGetCurrentContext(), (i32)key);
+}
+
+glm::vec2 platform_input_get_mouse_position() {
+    f64 x, y;
+    glfwGetCursorPos((GLFWwindow*)glfwGetCurrentContext(), &x, &y);
+    return glm::vec2((f32)x, (f32)y);
+}
+
+bool platform_input_mouse_button_down(mouse_button button) {
+    return glfwGetMouseButton((GLFWwindow*)glfwGetCurrentContext(), (i32)button) == GLFW_PRESS;
+}
+
+bool platform_input_mouse_button_up(mouse_button button) {
+    return glfwGetMouseButton((GLFWwindow*)glfwGetCurrentContext(), (i32)button) == GLFW_RELEASE;
+}
+
+key_state platform_input_get_mouse_button_state(mouse_button button) {
+    return (key_state)glfwGetMouseButton((GLFWwindow*)glfwGetCurrentContext(), (i32)button);
 }

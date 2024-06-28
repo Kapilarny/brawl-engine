@@ -6,13 +6,13 @@
 #define INPUT_H
 #include "defines.h"
 
-enum class KEY_STATE {
-    RELEASED,
-    PRESSED,
-    REPEATED
+enum class key_state {
+    RELEASED = 0,
+    PRESSED = 1,
+    REPEATED = 2
 };
 
-enum class Key {
+enum class input_key {
     SPACE              = 32,
     APOSTROPHE         = 39,  /* ' */
     COMMA              = 44,  /* , */
@@ -137,6 +137,17 @@ enum class Key {
     MENU               = 348,
 
     LAST               = MENU
+};
+
+enum class mouse_button {
+    LEFT,
+    RIGHT,
+    MIDDLE,
+    BUTTON_4,
+    BUTTON_5,
+    BUTTON_6,
+    BUTTON_7,
+    BUTTON_8
 };
 
 #endif //INPUT_H

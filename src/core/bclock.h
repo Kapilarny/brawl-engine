@@ -7,7 +7,7 @@ class bclock {
 public:
     void start();
     void stop();
-    void update();
+    f64 update();
 
     [[nodiscard]] f64 get_elapsed() const;
     [[nodiscard]] f64 get_start_time() const;

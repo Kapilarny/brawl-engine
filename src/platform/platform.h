@@ -6,6 +6,8 @@
 #include "memory/bvector.h"
 #include "input.h"
 
+#include <glm/glm.hpp>
+
 class window {
 public:
     window(const char* title, u32 width, u32 height);
@@ -51,7 +53,13 @@ void* platform_get_proc_address_ptr();
 
 // bool platform_input_key_pressed(Key key);
 // bool platform_input_key_released(Key key);
-bool platform_input_key_down(Key key);
-bool platform_input_key_up(Key key);
+bool platform_input_key_down(input_key key);
+bool platform_input_key_up(input_key key);
+key_state platform_input_get_key_state(input_key key);
+
+glm::vec2 platform_input_get_mouse_position();
+bool platform_input_mouse_button_down(mouse_button button);
+bool platform_input_mouse_button_up(mouse_button button);
+key_state platform_input_get_mouse_button_state(mouse_button button);
 
 #endif //PLATFORM_H

@@ -11,10 +11,10 @@ void bclock::stop() {
     start_time = 0;
 }
 
-void bclock::update() {
-    if(start_time == 0) return;
+f64 bclock::update() {
+    if(start_time == 0) return 0;
 
-    elapsed = platform_get_absolute_time() - start_time;
+    return elapsed = platform_get_absolute_time() - start_time;
 }
 
 f64 bclock::get_elapsed() const {

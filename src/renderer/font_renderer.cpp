@@ -2,15 +2,24 @@
 // Created by user on 27.06.2024.
 //
 
-#include "font_manager.h"
+#include "font_renderer.h"
 #include "texture.h"
 
 #include <ft2build.h>
 #include <glm/ext/matrix_clip_space.hpp>
 
+#include "core/camera.h"
+#include "core/camera.h"
+#include "core/camera.h"
+#include "core/camera.h"
+#include "core/camera.h"
+#include "core/camera.h"
+#include "core/camera.h"
+#include "core/camera.h"
+
 #include FT_FREETYPE_H
 
-font_manager::font_manager(renderer_frontend* renderer, const char* font_path) : renderer(renderer) {
+font_renderer::font_renderer(renderer_frontend* renderer, const char* font_path) : renderer(renderer) {
     FT_Library ft;
     ASSERT(!FT_Init_FreeType(&ft), "Failed to initialize FreeType");
 
@@ -59,19 +68,19 @@ font_manager::font_manager(renderer_frontend* renderer, const char* font_path) :
     vert_arr->add_vertex_buffer(vert_buff);
 }
 
-font_manager::~font_manager() {
+font_renderer::~font_renderer() {
     for(auto& [_, chara] : glyphs) {
         delete chara.tex;
     }
 }
 
-void font_manager::render_text(const char *text, glm::vec2 pos, f32 scale, glm::vec4 color) {
-    auto viewport = renderer->get_viewport();
-    auto projection = glm::ortho(0.0f, (f32)viewport.x, 0.0f, (f32)viewport.y);
+void font_renderer::render_text(const char *text, glm::vec2 pos, f32 scale, glm::vec3 color) {
+    auto viewport = renderer->get_viewport(); // TODO: Add viewport resize callbacks to update this variable.
+    auto projection = glm::ortho(0.0f, (f32)viewport.x, 0.0f, (f32)viewport.y); // TODO: This should be a member variable. It's redundant to calculate this every frame.
 
     text_shader->bind();
     text_shader->set_mat4("projection", projection);
-    text_shader->set_vec4("textColor", color);
+    text_shader->set_vec3("textColor", color);
 
     vert_arr->bind();
 

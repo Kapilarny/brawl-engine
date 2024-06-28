@@ -20,12 +20,12 @@ struct character {
     u32 advance;
 };
 
-class font_manager {
+class font_renderer {
 public:
-    font_manager(renderer_frontend* renderer, const char* font_path);
-    ~font_manager();
+    font_renderer(renderer_frontend* renderer, const char* font_path);
+    ~font_renderer();
 
-    void render_text(const char* text, glm::vec2 pos, f32 scale, glm::vec4 color);
+    void render_text(const char *text, glm::vec2 pos, float scale, glm::vec3 color);
 private:
     renderer_frontend* renderer;
     ptr_wrap<shader> text_shader;
