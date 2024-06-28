@@ -4,6 +4,7 @@
 #include <stbi_image.h>
 
 #include <glad/gl.h>
+#include <glm/vec2.hpp>
 
 #include "core/logger.h"
 
@@ -56,7 +57,10 @@ gl_texture::gl_texture(const char *file_path, texture_format format, const textu
     stbi_image_free(data);
 }
 
-gl_texture::gl_texture(const void *data, texture_format format, const texture_params &params) {
+gl_texture::gl_texture(const void *data, i32 w, i32 h, texture_format format, const texture_params &params) {
+    width = w;
+    height = h;
+
     load_texture(data, format, params);
 }
 
@@ -84,5 +88,5 @@ void gl_texture::load_texture(const void *data, texture_format format, const tex
     const i32 fmt = texture_format_to_gl(format);
 
     glTexImage2D(GL_TEXTURE_2D, 0, fmt, width, height, 0, fmt, GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
+    if(params.generate_mipmaps) glGenerateMipmap(GL_TEXTURE_2D);
 }

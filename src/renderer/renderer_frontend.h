@@ -1,6 +1,7 @@
 #ifndef RENDERER_FRONTEND_H
 #define RENDERER_FRONTEND_H
 
+#include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
 
 #include "defines.h"
@@ -28,6 +29,7 @@ public:
     virtual void draw_arrays(vertex_array* vertex_array, u32 count) = 0;
 
     virtual void set_viewport(u32 x, u32 y, u32 width, u32 height) = 0;
+    virtual glm::vec2 get_viewport() = 0;
     virtual const char* get_name() = 0;
 protected:
     window& wnd;

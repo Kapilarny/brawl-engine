@@ -12,9 +12,9 @@ texture* texture::create(const char *file_path, texture_format format, const tex
     }
 }
 
-texture* texture::create(const void *data, texture_format format, const texture_params &params) {
+texture* texture::create(const void *data, i32 w, i32 h, texture_format format, const texture_params &params) {
     switch (get_renderer_api()) {
-        case RENDERER_API::OPENGL: return new gl_texture(data, format, params);
+        case RENDERER_API::OPENGL: return new gl_texture(data, w, h, format, params);
         default: return nullptr;
     }
 }

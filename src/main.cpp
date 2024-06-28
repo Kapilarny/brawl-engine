@@ -4,6 +4,7 @@
 #include "core/bclock.h"
 #include "core/logger.h"
 #include "platform/platform.h"
+#include "renderer/font_manager.h"
 #include "renderer/renderer_2d.h"
 #include "renderer/renderer_frontend.h"
 
@@ -24,6 +25,8 @@ int main() {
     texture::set_flip_y(true);
     ptr_wrap<texture> container = texture::create("../resources/container.jpg", texture_format::RGB);
     ptr_wrap<texture> awesomeface = texture::create("../resources/awesomeface.png", texture_format::RGBA);
+
+    font_manager font(rend.get_backend(), "../resources/cursecasual.ttf");
 
     u64 frame_count = 0;
     f64 target_frame_time = 1.0 / 60.0;
@@ -61,16 +64,18 @@ int main() {
             pos.x += speed * delta_time;
         }
 
-        rend.begin();
-
         camera& cam = rend.get_camera();
         // cam.set_position(0, 0, cam.get_z() + (multiplier * 3 * delta_time));
+
+        rend.begin();
 
         // rend.draw_quad({-pos.x, pos.y + .5f}, {1, 1}, container.get());
         // rend.draw_quad({pos.x, pos.y - .5f}, {1, 1}, awesomeface.get());
 
+        font.render_text("wowie", {0, 0}, 1, {1, 0, 0, 1});
+
         rend.draw_quad(pos, {1, 1}, container.get(), 45);
-        rend.draw_quad({0, 0}, {1, 1}, {1, 0, 0, 1});
+        // rend.draw_quad({0, 0}, {1, 1}, {1, 0, 0, 1});
 
         rend.end();
 

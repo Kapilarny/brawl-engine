@@ -36,13 +36,14 @@ struct texture_params {
     texture_filter mag_filter = texture_filter::LINEAR;
     texture_edge_value_sampling wrap_s = texture_edge_value_sampling::REPEAT;
     texture_edge_value_sampling wrap_t = texture_edge_value_sampling::REPEAT;
+    bool generate_mipmaps = true;
 };
 
 class texture {
 public:
     virtual ~texture() = default;
     static texture* create(const char* file_path, texture_format format, const texture_params& params = {});
-    static texture* create(const void* data, texture_format format, const texture_params& params = {});
+    static texture* create(const void *data, i32 w, i32 h, texture_format format, const texture_params &params = {});
 
     virtual void bind(u32 texture_id) = 0;
     static void set_flip_y(bool flip);

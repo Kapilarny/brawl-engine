@@ -23,7 +23,7 @@ gl_backend::gl_backend(window &window): renderer_frontend(window) {
     BINFO("Loaded OpenGL %d.%d", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
 
     glViewport(0, 0, window.get_width(), window.get_height());
-
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
     window.set_framebuffer_callback(on_resize);
 }

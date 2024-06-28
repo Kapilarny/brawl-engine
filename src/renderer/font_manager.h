@@ -22,14 +22,15 @@ struct character {
 
 class font_manager {
 public:
-    font_manager(renderer_frontend& renderer, const char* font_path);
+    font_manager(renderer_frontend* renderer, const char* font_path);
     ~font_manager();
 
     void render_text(const char* text, glm::vec2 pos, f32 scale, glm::vec4 color);
 private:
-    renderer_frontend& renderer;
+    renderer_frontend* renderer;
     ptr_wrap<shader> text_shader;
-    ptr_wrap<vertex_buffer> vert_buff;
+    ptr_wrap<vertex_array> vert_arr;
+    vertex_buffer* vert_buff; // This CANNOT be a ptr_wrap because it gets deleted in the destructor of vertex_array
     std::map<char, character> glyphs;
 };
 

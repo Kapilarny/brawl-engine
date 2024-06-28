@@ -16,6 +16,7 @@ public:
     void set_blending(bool blend) override;
     void set_clear_color(glm::vec4& color) override { clear_color = color; }
     void set_viewport(u32 x, u32 y, u32 width, u32 height) override;
+    glm::vec2 get_viewport() override { return {wnd.get_width(), wnd.get_height()}; }
 
     void draw_indexed(vertex_array* vertex_array, u32 index_count) override;
     void draw_arrays(vertex_array* vertex_array, u32 count) override;

@@ -25,6 +25,7 @@ public:
     [[nodiscard]] const char* get_backend_name() const { return renderer->get_name(); }
     [[nodiscard]] const camera& get_camera() const { return cam; }
     [[nodiscard]] camera& get_camera() { return cam; }
+    [[nodiscard]] renderer_frontend* get_backend() const { return renderer.get(); }
 
     void set_clear_color(glm::vec4& color) const;
 private:
