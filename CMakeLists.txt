@@ -79,7 +79,6 @@ add_executable(brawl_engine
         src/renderer/font_manager.cpp
         src/renderer/font_manager.h
         src/renderer/gl/gl_font_manager.cpp
-        src/renderer/gl/gl_font_manager.h
 )
 
 target_link_libraries(brawl_engine PRIVATE -static glfw freetype)

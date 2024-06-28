@@ -72,6 +72,11 @@ void gl_backend::draw_indexed(vertex_array *vertex_array, u32 index_count) {
     glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr);
 }
 
+void gl_backend::draw_arrays(vertex_array *vertex_array, u32 count) {
+    vertex_array->bind();
+    glDrawArrays(GL_TRIANGLES, 0, count);
+}
+
 const char *gl_backend::get_name() {
     return "OpenGL";
 }

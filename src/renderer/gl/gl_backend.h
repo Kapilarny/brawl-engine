@@ -18,6 +18,7 @@ public:
     void set_viewport(u32 x, u32 y, u32 width, u32 height) override;
 
     void draw_indexed(vertex_array* vertex_array, u32 index_count) override;
+    void draw_arrays(vertex_array* vertex_array, u32 count) override;
 
     const char* get_name() override;
 private:

@@ -22,8 +22,8 @@ int main() {
     i32 multiplier = 1;
 
     texture::set_flip_y(true);
-    ptr_wrap<texture> container = create_texture("../resources/container.jpg", texture_format::RGB);
-    ptr_wrap<texture> awesomeface = create_texture("../resources/awesomeface.png", texture_format::RGBA);
+    ptr_wrap<texture> container = texture::create("../resources/container.jpg", texture_format::RGB);
+    ptr_wrap<texture> awesomeface = texture::create("../resources/awesomeface.png", texture_format::RGBA);
 
     u64 frame_count = 0;
     f64 target_frame_time = 1.0 / 60.0;

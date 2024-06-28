@@ -25,6 +25,7 @@ public:
 
     virtual void set_blending(bool blend) = 0;
     virtual void draw_indexed(vertex_array* vertex_array, u32 index_count) = 0;
+    virtual void draw_arrays(vertex_array* vertex_array, u32 count) = 0;
 
     virtual void set_viewport(u32 x, u32 y, u32 width, u32 height) = 0;
     virtual const char* get_name() = 0;
