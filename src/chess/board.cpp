@@ -28,7 +28,7 @@ board::board() {
     // Set the pieces
     for(i8 i = 0; i < 8; i++) {
         for(i8 j = 0; j < 8; j++) {
-            set_piece(i, j, piece_type::EMPTY, piece_color::WHITE);
+            set_piece(i, j, piece_type::EMPTY, piece_color::NONE);
         }
     }
 
@@ -72,10 +72,27 @@ void board::update() {
         pos.x /= 129;
         pos.y /= 129;
 
-        auto [type, color] = get_piece(pos.x, (7 - (i8)pos.y));
-        BINFO("Selected %s %s at %d, %d", get_piece_name(type), get_piece_color_str(color), (i8)pos.x, (7 - (i8)pos.y));
-        if(type != piece_type::EMPTY) selected_piece = {(i8)pos.x, (7 - (i8)pos.y)};
-        else selected_piece = {-1, -1};
+        i8 x = (i8)pos.x;
+        i8 y = (i8)pos.y;
+
+        auto [type, color] = get_piece(pos.x, 7 - y);
+        BINFO("Selected %s %s at %d, %d", get_piece_name(type), get_piece_color_str(color), (i8)pos.x, 7 - y);
+
+        if(selected_piece.first != x && selected_piece.second != y) {
+            if(selected_piece.first != -1) {
+                // Check if the move is valid
+                auto [sel_type, sel_color] = get_piece(selected_piece.first, selected_piece.second);
+                if(type == piece_type::EMPTY || color == get_opposite_color(sel_color)) {
+                    set_piece(pos.x, 7 - y, sel_type, sel_color);
+                    set_piece(selected_piece.first, selected_piece.second, piece_type::EMPTY, piece_color::NONE);
+                }
+
+                selected_piece = {-1, -1};
+            } else {
+                if(type != piece_type::EMPTY) selected_piece = {(i8)pos.x, 7 - y};
+                else selected_piece = {-1, -1};
+            }
+        }
     }
 }
 
@@ -99,27 +116,15 @@ void board::display_possible_moves(renderer_2d &rend, i8 x, i8 y) {
     auto [type, color] = get_piece(x, y);
     i8 norm_y = y;
 
-    if(color == piece_color::BLACK) {
-        norm_y = 7 - y;
-    }
-
-    BINFO("X: %d, Y: %d", x, y);
-    BINFO("Piece: %s %s", get_piece_name(type), get_piece_color_str(color));
-    BINFO("norm_y: %d", x, norm_y);
+    if(color == piece_color::BLACK) norm_y = 7 - y;
 
     piece* p = piece::create(*this, {type, color}, x, norm_y);
 
     // Get the valid moves
     auto moves = p->get_valid_moves();
 
-    // Draw the moves
-    if(norm_y != y) {
-        for(auto& [x, y] : moves) {
-            rend.draw_quad({-4 + x * 129, -9 + y * 129}, {130, 130}, {0, 1, 0, .5f});
-        }
-    }
-
     for(auto& [x, y] : moves) {
+        if(color == piece_color::BLACK) y = 7 - y;
         rend.draw_quad({-4 + x * 129, -9 + y * 129}, {130, 130}, {1, 0, 0, .5f});
     }
 }

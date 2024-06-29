@@ -19,6 +19,7 @@ enum class piece_type {
 };
 
 enum class piece_color {
+    NONE = -1,
     BLACK = 0,
     WHITE = 1
 };
@@ -47,6 +48,10 @@ private:
     bvector<texture*> piece_textures;
     ptr_wrap<texture> board_tex;
 };
+
+inline piece_color get_opposite_color(piece_color color) {
+    return color == piece_color::WHITE ? piece_color::BLACK : piece_color::WHITE;
+}
 
 inline const char * get_piece_name(piece_type type) {
     switch (type) {
