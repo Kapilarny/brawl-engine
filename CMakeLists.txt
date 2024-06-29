@@ -84,6 +84,10 @@ add_executable(brawl_engine
         src/chess/chess.h
         src/chess/board.cpp
         src/chess/board.h
+        src/chess/piece.h
+        src/chess/piece_impl/pawn.cpp
+        src/chess/piece_impl/pawn.h
+        src/chess/piece.cpp
 )
 
 target_link_libraries(brawl_engine PRIVATE -static glfw freetype)

@@ -12,9 +12,9 @@ enum class piece_type {
     EMPTY = -1,
     BISHOP = 0,
     KING = 1,
-    PAWN = 2,
-    QUEEN = 3,
-    KNIGHT = 4,
+    KNIGHT = 2,
+    PAWN = 3,
+    QUEEN = 4,
     ROOK = 5
 };
 
@@ -23,7 +23,7 @@ enum class piece_color {
     WHITE = 1
 };
 
-struct piece {
+struct piece_data {
     piece_type type;
     piece_color color;
 };
@@ -33,15 +33,39 @@ public:
     board();
     ~board() = default;
 
+    void update();
     void draw_board(renderer_2d& rend);
+    void display_possible_moves(renderer_2d& rend, i8 x, i8 y);
     void set_piece(u8 x, u8 y, piece_type type, piece_color color);
-    piece get_piece(u8 x, u8 y);
+    piece_data get_piece(u8 x, u8 y, bool norm = false);
 
     texture* get_texture(piece_type type, piece_color color);
 private:
-    piece board_arr[8][8]{};
+    bool white_turn = true;
+    std::pair<i8, i8> selected_piece = {-1, -1};
+    piece_data board_arr[8][8]{};
     bvector<texture*> piece_textures;
     ptr_wrap<texture> board_tex;
 };
+
+inline const char * get_piece_name(piece_type type) {
+    switch (type) {
+        case piece_type::BISHOP: return "Bishop";
+        case piece_type::KING: return "King";
+        case piece_type::KNIGHT: return "Knight";
+        case piece_type::PAWN: return "Pawn";
+        case piece_type::QUEEN: return "Queen";
+        case piece_type::ROOK: return "Rook";
+        default: return "Empty";
+    }
+}
+
+inline const char * get_piece_color_str(piece_color color) {
+    switch (color) {
+        case piece_color::BLACK: return "Black";
+        case piece_color::WHITE: return "White";
+        default: return "Empty";
+    }
+}
 
 #endif //BOARD_H

@@ -36,8 +36,9 @@ void chess_example() {
         // Calculate delta time
         f64 delta_time = delta_clock.update();
         delta_clock.start();
-
         w.poll_events();
+
+        board.update(); // Update the board
 
         rend.begin();
 
@@ -48,6 +49,8 @@ void chess_example() {
         // for(int i = 0; i < 8; i++) {
         //     rend.draw_quad({-7 + i * 130, -10 + i * 130}, {130, 130}, the_rook.get()); // I spent 15 minutes fine tuning the position stuff lmfao
         // }
+
+        font.render_text("brawl engine (c)", {10, 10}, 1, {sin(platform_get_absolute_time()), -sin(platform_get_absolute_time()), sin(platform_get_absolute_time())});
 
         rend.end();
 

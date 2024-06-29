@@ -4,6 +4,8 @@
 
 #include "board.h"
 
+#include "piece.h"
+
 board::board() {
     // Create the textures
     board_tex = texture::create("../resources/chess/board.jpg", texture_format::RGB);
@@ -35,6 +37,46 @@ board::board() {
         set_piece(i, 1, piece_type::PAWN, piece_color::WHITE);
         set_piece(i, 6, piece_type::PAWN, piece_color::BLACK);
     }
+
+    // THE ROOKS
+    set_piece(0, 0, piece_type::ROOK, piece_color::WHITE);
+    set_piece(7, 0, piece_type::ROOK, piece_color::WHITE);
+    set_piece(0, 7, piece_type::ROOK, piece_color::BLACK);
+    set_piece(7, 7, piece_type::ROOK, piece_color::BLACK);
+
+    // knights
+    set_piece(1, 0, piece_type::KNIGHT, piece_color::WHITE);
+    set_piece(6, 0, piece_type::KNIGHT, piece_color::WHITE);
+    set_piece(1, 7, piece_type::KNIGHT, piece_color::BLACK);
+    set_piece(6, 7, piece_type::KNIGHT, piece_color::BLACK);
+
+    // bishops
+    set_piece(2, 0, piece_type::BISHOP, piece_color::WHITE);
+    set_piece(5, 0, piece_type::BISHOP, piece_color::WHITE);
+    set_piece(2, 7, piece_type::BISHOP, piece_color::BLACK);
+    set_piece(5, 7, piece_type::BISHOP, piece_color::BLACK);
+
+    // queens
+    set_piece(3, 0, piece_type::QUEEN, piece_color::WHITE);
+    set_piece(3, 7, piece_type::QUEEN, piece_color::BLACK);
+
+    // kings
+    set_piece(4, 0, piece_type::KING, piece_color::WHITE);
+    set_piece(4, 7, piece_type::KING, piece_color::BLACK);
+}
+
+void board::update() {
+    // Check for mouse input
+    if(platform_input_mouse_button_down(mouse_button::LEFT)) {
+        auto pos = platform_input_get_mouse_position();
+        pos.x /= 129;
+        pos.y /= 129;
+
+        auto [type, color] = get_piece(pos.x, (7 - (i8)pos.y));
+        BINFO("Selected %s %s at %d, %d", get_piece_name(type), get_piece_color_str(color), (i8)pos.x, (7 - (i8)pos.y));
+        if(type != piece_type::EMPTY) selected_piece = {(i8)pos.x, (7 - (i8)pos.y)};
+        else selected_piece = {-1, -1};
+    }
 }
 
 void board::draw_board(renderer_2d &rend) {
@@ -48,16 +90,50 @@ void board::draw_board(renderer_2d &rend) {
             }
         }
     }
+
+    if(selected_piece.first != -1) display_possible_moves(rend, selected_piece.first, selected_piece.second);
+}
+
+void board::display_possible_moves(renderer_2d &rend, i8 x, i8 y) {
+    // Get the piece
+    auto [type, color] = get_piece(x, y);
+    i8 norm_y = y;
+
+    if(color == piece_color::BLACK) {
+        norm_y = 7 - y;
+    }
+
+    BINFO("X: %d, Y: %d", x, y);
+    BINFO("Piece: %s %s", get_piece_name(type), get_piece_color_str(color));
+    BINFO("norm_y: %d", x, norm_y);
+
+    piece* p = piece::create(*this, {type, color}, x, norm_y);
+
+    // Get the valid moves
+    auto moves = p->get_valid_moves();
+
+    // Draw the moves
+    if(norm_y != y) {
+        for(auto& [x, y] : moves) {
+            rend.draw_quad({-4 + x * 129, -9 + y * 129}, {130, 130}, {0, 1, 0, .5f});
+        }
+    }
+
+    for(auto& [x, y] : moves) {
+        rend.draw_quad({-4 + x * 129, -9 + y * 129}, {130, 130}, {1, 0, 0, .5f});
+    }
 }
 
 void board::set_piece(u8 x, u8 y, piece_type type, piece_color color) {
     board_arr[x][y] = {type, color};
 }
 
-piece board::get_piece(u8 x, u8 y) {
+piece_data board::get_piece(u8 x, u8 y, bool norm) {
+    if(norm) y = 7 - y;
+
     return board_arr[x][y];
 }
 
 texture* board::get_texture(piece_type type, piece_color color) {
-    return piece_textures[(u8)type+1 + (u8) color * 6];
+    return piece_textures[(u8)type + (u8) color * 6];
 }
