@@ -47,6 +47,11 @@ public:
 
     virtual void bind(u32 texture_id) = 0;
     static void set_flip_y(bool flip);
+
+    [[nodiscard]] i32 get_width() const { return width; }
+    [[nodiscard]] i32 get_height() const { return height; }
+protected:
+    i32 width{}, height{};
 };
 
 #endif //TEXTURE_H

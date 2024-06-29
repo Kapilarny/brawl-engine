@@ -89,7 +89,7 @@ void renderer_2d::draw_quad(glm::vec2 position, glm::vec2 size, texture *tex, f3
     // auto view = cam.get_view();
     auto projection = cam.get_projection();
 
-    model = glm::translate(model, {position.x, position.y,0});
+    model = glm::translate(model, {position.x + size.x / 2, position.y + size.y / 2,0});
     model = glm::scale(model, {size.x, size.y, 0});
     model = glm::rotate(model, rotation, {0, 0, 1});
 

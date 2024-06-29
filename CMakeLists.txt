@@ -80,6 +80,10 @@ add_executable(brawl_engine
         src/renderer/font_renderer.cpp
         src/core/camera_2d.cpp
         src/core/camera_2d.h
+        src/chess/chess.cpp
+        src/chess/chess.h
+        src/chess/board.cpp
+        src/chess/board.h
 )
 
 target_link_libraries(brawl_engine PRIVATE -static glfw freetype)

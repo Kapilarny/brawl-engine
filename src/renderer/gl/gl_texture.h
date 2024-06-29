@@ -15,7 +15,7 @@ private:
     void load_texture(const void *data, texture_format format, const texture_params &params);
 
     u32 renderer_id{};
-    i32 width{}, height{}, channels{};
+    i32 channels{};
 };
 
 #endif //GL_TEXTURE_H

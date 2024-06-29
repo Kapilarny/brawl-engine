@@ -14,3 +14,10 @@ void bcopy_memory(void* dest, void* src, u64 size) {
         byte[i] = copy[i];
     }
 }
+
+void bset_memory(void *memory, u8 value, u64 size) {
+    u8 *byte = (u8 *)memory;
+    for (u64 i = 0; i < size; i++) {
+        *byte++ = value;
+    }
+}
