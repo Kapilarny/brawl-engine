@@ -79,21 +79,33 @@ void board::update() {
         auto [type, color] = get_piece(pos.x, 7 - y);
         BINFO("Selected %s %s at %d, %d", get_piece_name(type), get_piece_color_str(color), (i8)pos.x, 7 - y);
         BINFO("Last selected %d, %d", selected_piece.first, selected_piece.second);
-        if(selected_piece.first != x || selected_piece.second != 7 - y) {
+
+        bool valid_turn = (selected_piece.first != -1 || (white_turn ? color == piece_color::WHITE : color == piece_color::BLACK)) || color == piece_color::NONE;
+
+        if(valid_turn && (selected_piece.first != x || selected_piece.second != 7 - y)) {
             if(selected_piece != std::make_pair((i8)-1, (i8)-1)) {
                 // Check if the move is valid
                 auto [sel_type, sel_color] = get_piece(selected_piece.first, selected_piece.second);
 
-                ptr_wrap p = piece::create(*this, {sel_type, sel_color}, selected_piece.first, selected_piece.second);
-                i8 norm_y = 7 - y;
-                if(sel_color == piece_color::BLACK) norm_y = 7 - norm_y;
+                if(sel_color != color) {
+                    i8 norm_sel_y = selected_piece.second;
+                    if(sel_color == piece_color::BLACK) norm_sel_y = 7 - norm_sel_y;
 
-                if(p->is_valid_move(x, norm_y)) {
-                    set_piece(pos.x, 7 - y, sel_type, sel_color);
-                    set_piece(selected_piece.first, selected_piece.second, piece_type::EMPTY, piece_color::NONE);
+                    ptr_wrap p = piece::create(*this, {sel_type, sel_color}, selected_piece.first, norm_sel_y);
+                    i8 norm_y = 7 - y;
+                    if(sel_color == piece_color::BLACK) norm_y = 7 - norm_y;
+
+                    if(p->is_valid_move(x, norm_y)) {
+                        set_piece(pos.x, 7 - y, sel_type, sel_color);
+                        set_piece(selected_piece.first, selected_piece.second, piece_type::EMPTY, piece_color::NONE);
+
+                        white_turn = !white_turn;
+                    }
+
+                    selected_piece = {-1, -1};
+                } else {
+                    selected_piece = {(i8)pos.x, 7 - y};
                 }
-
-                selected_piece = {-1, -1};
             } else {
                 if(type != piece_type::EMPTY) selected_piece = {(i8)pos.x, 7 - y};
                 else selected_piece = {-1, -1};

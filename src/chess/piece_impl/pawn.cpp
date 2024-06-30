@@ -5,13 +5,14 @@
 #include "pawn.h"
 
 bool pawn::is_valid_move(i8 x, i8 y) {
+    if(this->y == 1 && y == 3) return true; // Pawn can only move two squares on first move
     if(y != this->y + 1) return false; // Pawn can only move forward
 
     // Check diagonal
     if(x != this->x) return board_ref.get_piece(x, y, norm).color == get_opposite_color(color) && (x == this->x + 1 || x == this->x - 1);
 
     // Check forward
-    return board_ref.get_piece(x, y).type == piece_type::EMPTY;
+    return board_ref.get_piece(x, y, norm).type == piece_type::EMPTY;
 }
 
 bvector<std::pair<i8, i8>> pawn::get_valid_moves() {
@@ -21,6 +22,9 @@ bvector<std::pair<i8, i8>> pawn::get_valid_moves() {
 
     // Check forward
     if(board_ref.get_piece(x, y + 1, norm).type == piece_type::EMPTY) moves.push_back({x, y + 1});
+
+    // Check double move
+    if(y == 1 && board_ref.get_piece(x, y + 2, norm).type == piece_type::EMPTY) moves.push_back({x, y + 2});
 
     // Check diagonal
     auto opposite_color = get_opposite_color(color);
