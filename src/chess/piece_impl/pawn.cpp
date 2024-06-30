@@ -5,11 +5,13 @@
 #include "pawn.h"
 
 bool pawn::is_valid_move(i8 x, i8 y) {
+    if(y != this->y + 1) return false; // Pawn can only move forward
+
     // Check diagonal
-    if(y == this->y + 1) return x == this->x + 1 || x == this->x - 1 && board_ref.get_piece(x, y, norm).color != color;
+    if(x != this->x) return board_ref.get_piece(x, y, norm).color == get_opposite_color(color) && (x == this->x + 1 || x == this->x - 1);
 
     // Check forward
-    return x == this->x && y == this->y + 1 && board_ref.get_piece(x, y).type == piece_type::EMPTY;
+    return board_ref.get_piece(x, y).type == piece_type::EMPTY;
 }
 
 bvector<std::pair<i8, i8>> pawn::get_valid_moves() {

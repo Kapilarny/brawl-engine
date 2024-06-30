@@ -32,6 +32,9 @@ struct piece_data {
 class board {
 public:
     board();
+
+    bool is_valid_move(piece_data data, i8 x, i8 y);
+
     ~board() = default;
 
     void update();

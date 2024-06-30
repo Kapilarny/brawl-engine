@@ -5,6 +5,7 @@
 #include "board.h"
 
 #include "piece.h"
+#include "piece_impl/pawn.h"
 
 board::board() {
     // Create the textures
@@ -77,12 +78,17 @@ void board::update() {
 
         auto [type, color] = get_piece(pos.x, 7 - y);
         BINFO("Selected %s %s at %d, %d", get_piece_name(type), get_piece_color_str(color), (i8)pos.x, 7 - y);
-
-        if(selected_piece.first != x && selected_piece.second != y) {
-            if(selected_piece.first != -1) {
+        BINFO("Last selected %d, %d", selected_piece.first, selected_piece.second);
+        if(selected_piece.first != x || selected_piece.second != 7 - y) {
+            if(selected_piece != std::make_pair((i8)-1, (i8)-1)) {
                 // Check if the move is valid
                 auto [sel_type, sel_color] = get_piece(selected_piece.first, selected_piece.second);
-                if(type == piece_type::EMPTY || color == get_opposite_color(sel_color)) {
+
+                ptr_wrap p = piece::create(*this, {sel_type, sel_color}, selected_piece.first, selected_piece.second);
+                i8 norm_y = 7 - y;
+                if(sel_color == piece_color::BLACK) norm_y = 7 - norm_y;
+
+                if(p->is_valid_move(x, norm_y)) {
                     set_piece(pos.x, 7 - y, sel_type, sel_color);
                     set_piece(selected_piece.first, selected_piece.second, piece_type::EMPTY, piece_color::NONE);
                 }
