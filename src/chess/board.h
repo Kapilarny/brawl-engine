@@ -36,6 +36,9 @@ class board {
 public:
     board();
 
+    void regenerate_attacked_squares(bool turn);
+    void move_piece(i8 x, i8 y);
+
     ~board() = default;
 
     void update();
@@ -55,6 +58,10 @@ public:
     texture* get_texture(piece_type type, piece_color color);
 private:
     bool white_turn = true;
+    bool is_in_check = false;
+
+    i16 white_king = -1;
+    i16 black_king = -1;
 
     std::set<i16> white_pieces; // I was not thinking last time goddamn
     std::set<i16> black_pieces;

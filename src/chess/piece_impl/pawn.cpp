@@ -27,7 +27,16 @@ bvector<std::pair<i8, i8>> pawn::get_valid_moves() {
     if(y == 1 && board_ref.get_piece(x, y + 2, norm).type == piece_type::EMPTY) moves.push_back({x, y + 2});
 
     // Check diagonal
-    // auto opposite_color = get_opposite_color(color);
+    auto opposite_color = get_opposite_color(color);
+    if(x + 1 <= 7 && board_ref.get_piece(x + 1, y + 1, norm).color == opposite_color) moves.push_back({x + 1, y + 1});
+    if(x - 1 >= 0 && board_ref.get_piece(x - 1, y + 1, norm).color == opposite_color) moves.push_back({x - 1, y + 1});
+
+    return moves;
+}
+
+bvector<std::pair<i8, i8>> pawn::get_attack_moves() {
+    bvector<std::pair<i8, i8>> moves;
+
     if(x + 1 <= 7) moves.push_back({x + 1, y + 1});
     if(x - 1 >= 0) moves.push_back({x - 1, y + 1});
 
