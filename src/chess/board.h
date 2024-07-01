@@ -37,13 +37,16 @@ public:
     board();
 
     void regenerate_attacked_squares(bool turn);
+
+    bool simulate_move(i8 from_x, i8 from_y, i8 to_x, i8 to_y);
+
     void move_piece(i8 x, i8 y);
 
     ~board() = default;
 
     void update();
     void draw_board(renderer_2d& rend);
-    void display_possible_moves(renderer_2d& rend, i8 x, i8 y);
+    void display_possible_moves(renderer_2d& rend, i8 p_x, i8 p_y);
     void set_piece(u8 x, u8 y, piece_type type, piece_color color);
     [[nodiscard]] piece_data get_piece(u8 x, u8 y, bool norm = false);
 
