@@ -26,7 +26,7 @@ font_renderer::font_renderer(renderer_frontend* renderer, const char* font_path)
     FT_Face face;
     ASSERT(!FT_New_Face(ft, font_path, 0, &face), "Failed to load font");
 
-    FT_Set_Pixel_Sizes(face, 0, 48);
+    FT_Set_Pixel_Sizes(face, 0, 72);
 
     for(u8 c = 0; c < 128; c++) {
         if(FT_Load_Char(face, c, FT_LOAD_RENDER)) {

@@ -42,7 +42,7 @@ void chess_example() {
 
         rend.begin();
 
-        board.draw_board(rend);
+        board.draw_board(rend, font);
 
         // rend.draw_quad({0, 0}, {w.get_width(), w.get_height()}, board.get()); // Draw the board
 

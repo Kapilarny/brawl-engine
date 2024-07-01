@@ -5,6 +5,7 @@
 #include "board.h"
 
 #include <algorithm>
+#include <utility>
 
 #include "piece.h"
 #include "piece_impl/pawn.h"
@@ -127,6 +128,20 @@ bool board::simulate_move(i8 from_x, i8 from_y, i8 to_x, i8 to_y) {
     auto [type, color] = get_piece(from_x, from_y);
     auto [to_type, to_color] = get_piece(to_x, to_y);
 
+    bool moving_white = color == piece_color::WHITE;
+
+    // ASSERT(type != piece_type::EMPTY, "Trying to move an empty piece");
+
+    if(type == piece_type::EMPTY) {
+        BDEBUG("Trying to move an empty piece");
+        return false;
+    }
+
+    auto black_count = black_pieces.size();
+    auto white_count = white_pieces.size();
+
+    // if(color == piece_color::BLACK) to_y = 7 - to_y;
+
     if(color == piece_color::WHITE) {
         white_pieces.erase(pack_pos({from_x, from_y}));
         white_pieces.insert(pack_pos({to_x, to_y}));
@@ -154,10 +169,10 @@ bool board::simulate_move(i8 from_x, i8 from_y, i8 to_x, i8 to_y) {
     set_piece(from_x, from_y, piece_type::EMPTY, piece_color::NONE);
 
     // Regenerate attacked squares
-    regenerate_attacked_squares(!white_turn);
+    regenerate_attacked_squares(!moving_white);
 
     // Check if the king is in check
-    bool moved_into_check = (white_turn && attacked_squares[unpack_pos(white_king).first][unpack_pos(white_king).second]) || !white_turn && attacked_squares[unpack_pos(black_king).first][unpack_pos(black_king).second];
+    bool moved_into_check = (moving_white && attacked_squares[unpack_pos(white_king).first][unpack_pos(white_king).second]) || !moving_white && attacked_squares[unpack_pos(black_king).first][unpack_pos(black_king).second];
 
     // Rollback the move
     if(type == piece_type::KING) {
@@ -167,9 +182,6 @@ bool board::simulate_move(i8 from_x, i8 from_y, i8 to_x, i8 to_y) {
 
     set_piece(from_x, from_y, type, color);
     set_piece(to_x, to_y, to_type, to_color);
-
-    // Regenerate attacked squares
-    regenerate_attacked_squares(!white_turn);
 
     if(color == piece_color::WHITE) {
         white_pieces.erase(pack_pos({to_x, to_y}));
@@ -187,6 +199,20 @@ bool board::simulate_move(i8 from_x, i8 from_y, i8 to_x, i8 to_y) {
         }
     }
 
+    if(black_count != black_pieces.size() || white_count != white_pieces.size()) {
+        // Print black pieces
+        BDEBUG("Black pieces: ");
+        for(auto val : black_pieces) {
+            auto [x, y] = unpack_pos(val);
+            auto [type, color] = get_piece(x, y);
+
+            BDEBUG("%s %s at %d, %d", get_piece_name(type), get_piece_color_str(color), x, y);
+        }
+    }
+
+    // Regenerate attacked squares
+    regenerate_attacked_squares(!moving_white);
+
     return !moved_into_check;
 }
 
@@ -196,9 +222,16 @@ void board::move_piece(i8 x, i8 y) {
     BINFO("Last selected %d, %d", selected_piece.first, selected_piece.second);
 
     bool is_selected = selected_piece.first != -1;
-    bool valid_turn = is_selected && ((white_turn ? color == piece_color::WHITE : color == piece_color::BLACK) || color == piece_color::NONE);
+    bool valid_color = white_turn ? color == piece_color::WHITE : color == piece_color::BLACK;
 
-    if(!is_selected && white_turn ? color == piece_color::WHITE : color == piece_color::BLACK) {
+    if(!is_selected && valid_color) {
+        selected_piece = {x, y};
+        return;
+    }
+
+    bool valid_turn = is_selected && (color == (white_turn ? piece_color::BLACK : piece_color::WHITE) || color == piece_color::NONE);
+
+    if(!valid_turn && is_selected) {
         selected_piece = {x, y};
         return;
     }
@@ -226,35 +259,21 @@ void board::move_piece(i8 x, i8 y) {
     }
 
     if(sel_color == piece_color::WHITE) {
-        BDEBUG("Erasing white piece at %d, %d", selected_piece.first, selected_piece.second);
-        BDEBUG("Inserting white piece at %d, %d", x, y);
-
         white_pieces.erase(pack_pos({selected_piece.first, selected_piece.second}));
         white_pieces.insert(pack_pos({x, y}));
 
         if(color == piece_color::BLACK) {
-            BDEBUG("Erasing black piece at %d, %d", selected_piece.first, selected_piece.second);
-            auto packed = pack_pos({x, y});
-            black_pieces.erase(packed);
-        } else {
-            BDEBUG("Blank piece at %d, %d", x, y);
+            black_pieces.erase(pack_pos({x, y}));
         }
     } else {
-        BDEBUG("Erasing black piece at %d, %d", selected_piece.first, selected_piece.second);
-        BDEBUG("Inserting black piece at %d, %d", x, y);
-
         black_pieces.erase(pack_pos({selected_piece.first, selected_piece.second}));
         black_pieces.insert(pack_pos({x, y}));
 
         if(color == piece_color::WHITE) {
-            BDEBUG("Erasing white piece at %d, %d", selected_piece.first, selected_piece.second);
             white_pieces.erase(pack_pos({x, y}));
-        } else {
-            BDEBUG("Blank piece at %d, %d", x, y);
         }
     }
 
-    auto backup = get_piece(x, y);
     set_piece(x, y, sel_type, sel_color);
     set_piece(selected_piece.first, selected_piece.second, piece_type::EMPTY, piece_color::NONE);
 
@@ -269,7 +288,45 @@ void board::move_piece(i8 x, i8 y) {
     // TODO: Checkmate/Check logic
     bool in_check = (!white_turn && attacked_squares[unpack_pos(white_king).first][unpack_pos(white_king).second]) || white_turn && attacked_squares[unpack_pos(black_king).first][unpack_pos(black_king).second];
     if(in_check) {
-        BFATAL("CHECK!");
+        // Check if it's a checkmate
+        bool checkmate = true;
+        for(auto val : (!white_turn ? white_pieces : black_pieces)) {
+            auto [from_x, from_y] = unpack_pos(val);
+            auto [type, color] = get_piece(from_x, from_y);
+
+            // if(color != (white_turn ? piece_color::WHITE : piece_color::BLACK)) continue;
+
+            if(color == piece_color::BLACK) from_y = 7 - from_y;
+
+            ptr_wrap p = piece::create(*this, {type, color}, from_x, from_y);
+            auto moves = p->get_possible_moves();
+
+            if(color == piece_color::BLACK) {
+                from_y = 7 - from_y;
+            }
+
+            for(auto& [x, y] : moves) {
+                i8 norm_move_y = y;
+                if(color == piece_color::BLACK) {
+                    norm_move_y = 7 - norm_move_y;
+                }
+
+                if(simulate_move(from_x, from_y, x, norm_move_y)) {
+                    checkmate = false;
+                    break;
+                }
+            }
+
+            if(!checkmate) break;
+        }
+
+        if(checkmate) {
+            display_text("Checkmate!", 10000);
+            checkmated = true;
+            return;
+        }
+
+        display_text("CHECK", 180);
     }
 
     white_turn = !white_turn;
@@ -277,6 +334,8 @@ void board::move_piece(i8 x, i8 y) {
 }
 
 void board::update() {
+    if(checkmated) return;
+
     // If F3 is pressed, print all the pieces
     if(platform_input_key_down(input_key::F3)) {
         BINFO("White pieces: ");
@@ -296,6 +355,8 @@ void board::update() {
         }
     }
 
+    if(frames_remaining > 0) return; // Don't update if there is text displayed
+
     // Check for mouse input
     if(platform_input_mouse_button_down(mouse_button::LEFT)) {
         auto pos = platform_input_get_mouse_position();
@@ -305,31 +366,46 @@ void board::update() {
         i8 x = (i8)pos.x;
         i8 y = 7 - (i8)pos.y;
 
-        move_piece(x, y);
+        if(x >= 0 && y >= 0) move_piece(x, y);
     }
 }
 
-void board::draw_board(renderer_2d &rend) {
+void board::display_text(std::string text, u64 frames) {
+    this->displayed_text = std::move(text);
+    this->frames_remaining = frames;
+}
+
+void board::draw_board(renderer_2d& rend, font_renderer& font) {
     rend.draw_quad({0, 0}, {1024, 1024}, board_tex.get());
 
-    for(int i = 0; i < 8; i++) {
-        for(int j = 0; j < 8; j++) {
-            auto [type, color] = get_piece(i, j);
-            if(type != piece_type::EMPTY) {
-                rend.draw_quad({i * 129, j * 129}, {130, 130}, get_texture(type, color));
+    if(!checkmated) {
+        for(int i = 0; i < 8; i++) {
+            for(int j = 0; j < 8; j++) {
+                auto [type, color] = get_piece(i, j);
+                if(type != piece_type::EMPTY) {
+                    rend.draw_quad({i * 129, j * 129}, {130, 130}, get_texture(type, color));
+                }
+            }
+        }
+
+        if(selected_piece.first != -1) display_possible_moves(rend, selected_piece.first, selected_piece.second);
+
+        // Draw the attacked squares
+        for(int i = 0; i < 8; i++) {
+            for(int j = 0; j < 8; j++) {
+                if(attacked_squares[i][j]) {
+                    rend.draw_quad({i * 129, j * 129}, {130, 130}, {0, 0, 1, .5f});
+                }
             }
         }
     }
 
-    if(selected_piece.first != -1) display_possible_moves(rend, selected_piece.first, selected_piece.second);
-
-    // Draw the attacked squares
-    for(int i = 0; i < 8; i++) {
-        for(int j = 0; j < 8; j++) {
-            if(attacked_squares[i][j]) {
-                rend.draw_quad({i * 129, j * 129}, {130, 130}, {0, 0, 1, .5f});
-            }
-        }
+    // Draw the text
+    if(frames_remaining > 0) {
+        // Draw a rect behind the text
+        rend.draw_quad({512-256, 512-128}, {512, 256}, {0, 0, 0, .8f});
+        font.render_text(displayed_text.c_str(), {512-128, 512-32}, 1, {1, 1, 1});
+        frames_remaining--;
     }
 }
 
@@ -347,7 +423,7 @@ void board::display_possible_moves(renderer_2d &rend, i8 p_x, i8 p_y) {
 
     for(auto& [x, y] : moves) {
         if(color == piece_color::BLACK) y = 7 - y;
-        if(!simulate_move(p_x, norm_y, x, y)) continue;
+        if(!simulate_move(p_x, p_y, x, y)) continue;
         rend.draw_quad({-4 + x * 129, -9 + y * 129}, {130, 130}, {1, 0, 0, .5f});
     }
 }

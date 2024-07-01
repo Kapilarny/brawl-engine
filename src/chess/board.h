@@ -6,8 +6,10 @@
 #define BOARD_H
 #include <map>
 #include <set>
+#include <string>
 
 #include "memory/bvector.h"
+#include "renderer/font_renderer.h"
 #include "renderer/renderer_2d.h"
 #include "renderer/texture.h"
 
@@ -35,17 +37,11 @@ struct piece_data {
 class board {
 public:
     board();
-
-    void regenerate_attacked_squares(bool turn);
-
-    bool simulate_move(i8 from_x, i8 from_y, i8 to_x, i8 to_y);
-
-    void move_piece(i8 x, i8 y);
-
     ~board() = default;
 
     void update();
-    void draw_board(renderer_2d& rend);
+    void display_text(std::string text, u64 frames = 60);
+    void draw_board(renderer_2d& rend, font_renderer& font);
     void display_possible_moves(renderer_2d& rend, i8 p_x, i8 p_y);
     void set_piece(u8 x, u8 y, piece_type type, piece_color color);
     [[nodiscard]] piece_data get_piece(u8 x, u8 y, bool norm = false);
@@ -60,8 +56,13 @@ public:
 
     texture* get_texture(piece_type type, piece_color color);
 private:
+    void regenerate_attacked_squares(bool turn);
+    bool simulate_move(i8 from_x, i8 from_y, i8 to_x, i8 to_y);
+    void move_piece(i8 x, i8 y);
+
     bool white_turn = true;
     bool is_in_check = false;
+    bool checkmated = false;
 
     i16 white_king = -1;
     i16 black_king = -1;
@@ -75,6 +76,9 @@ private:
     piece_data board_arr[8][8]{};
     bvector<texture*> piece_textures;
     ptr_wrap<texture> board_tex;
+
+    std::string displayed_text;
+    u64 frames_remaining{};
 };
 
 inline piece_color get_opposite_color(piece_color color) {

@@ -5,7 +5,7 @@
 #include "pawn.h"
 
 bool pawn::is_valid_move(i8 x, i8 y) {
-    if(this->y == 1 && y == 3) return true; // Pawn can only move two squares on first move
+    if(this->y == 1 && y == 3 && this->x == x) return true; // Pawn can only move two squares on first move
     if(y != this->y + 1) return false; // Pawn can only move forward
 
     // Check diagonal
@@ -42,3 +42,4 @@ bvector<std::pair<i8, i8>> pawn::get_attack_moves() {
 
     return moves;
 }
+

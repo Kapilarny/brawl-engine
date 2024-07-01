@@ -27,7 +27,7 @@ void log_output(LOG_LEVEL level, const char* message, ...);
 
 #define BFATAL(message, ...) log_output(LOG_LEVEL::FATAL, message, ##__VA_ARGS__);
 
-#define ASSERT(cond, msg, ...) if(!(cond)) { BFATAL("ASSERTION: %s", msg, ##__VA_ARGS__); *(char*)0 = 0;}
+#define ASSERT(cond, msg, ...) if(!(cond)) { BFATAL("ASSERTION at %s:%d -> %s", __FILE__, __LINE__, msg, ##__VA_ARGS__); *(char*)0 = 0;}
 
 // TODO: Just crash the program in a more elegant way lol
 #define FATAL_ERROR(msg) { BFATAL("%s -> " __FILE__ " at line %d", msg, __LINE__); *(char*)0 = 0;} // funny crash. Watch the `*(char*)0 = 0` JF Sebastien presentation on this, its hilarious
