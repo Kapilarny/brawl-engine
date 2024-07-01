@@ -96,6 +96,8 @@ add_executable(brawl_engine
         src/chess/piece_impl/rook.h
         src/chess/piece_impl/queen.cpp
         src/chess/piece_impl/queen.h
+        src/chess/piece_impl/king.cpp
+        src/chess/piece_impl/king.h
 )
 
 target_link_libraries(brawl_engine PRIVATE -static glfw freetype)

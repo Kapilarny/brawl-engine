@@ -4,6 +4,9 @@
 
 #ifndef BOARD_H
 #define BOARD_H
+#include <map>
+#include <set>
+
 #include "memory/bvector.h"
 #include "renderer/renderer_2d.h"
 #include "renderer/texture.h"
@@ -33,19 +36,31 @@ class board {
 public:
     board();
 
-    bool is_valid_move(piece_data data, i8 x, i8 y);
-
     ~board() = default;
 
     void update();
     void draw_board(renderer_2d& rend);
     void display_possible_moves(renderer_2d& rend, i8 x, i8 y);
     void set_piece(u8 x, u8 y, piece_type type, piece_color color);
-    piece_data get_piece(u8 x, u8 y, bool norm = false);
+    [[nodiscard]] piece_data get_piece(u8 x, u8 y, bool norm = false);
+
+    [[nodiscard]] bool is_attacked(i8 x, i8 y, bool norm = false) const {
+        if(norm) {
+            y = 7 - y;
+        }
+
+        return attacked_squares[x][y];
+    }
 
     texture* get_texture(piece_type type, piece_color color);
 private:
     bool white_turn = true;
+
+    std::set<i16> white_pieces; // I was not thinking last time goddamn
+    std::set<i16> black_pieces;
+
+    bool attacked_squares[8][8]{};
+
     std::pair<i8, i8> selected_piece = {-1, -1};
     piece_data board_arr[8][8]{};
     bvector<texture*> piece_textures;

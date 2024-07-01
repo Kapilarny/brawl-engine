@@ -4,8 +4,18 @@
 
 #include "board.h"
 
+#include <algorithm>
+
 #include "piece.h"
 #include "piece_impl/pawn.h"
+
+std::pair<i8, i8> unpack_pos(i16 pos) {
+    return {(i8)(pos >> 8), (i8)(pos & 0xFF)};
+}
+
+i16 pack_pos(std::pair<i8, i8> pos) {
+    return (i16)(pos.first << 8 | pos.second);
+}
 
 board::board() {
     // Create the textures
@@ -64,9 +74,36 @@ board::board() {
     // kings
     set_piece(4, 0, piece_type::KING, piece_color::WHITE);
     set_piece(4, 7, piece_type::KING, piece_color::BLACK);
+
+    // push the pieces
+    for(i8 i = 0; i < 8; i++) {
+        white_pieces.insert(pack_pos({i, 0}));
+        white_pieces.insert(pack_pos({i, 1}));
+        black_pieces.insert(pack_pos({i, 6}));
+        black_pieces.insert(pack_pos({i, 7}));
+    }
 }
 
 void board::update() {
+    // If F3 is pressed, print all the pieces
+    if(platform_input_key_down(input_key::F3)) {
+        BINFO("White pieces: ");
+        for(auto val : white_pieces) {
+            auto [x, y] = unpack_pos(val);
+            auto [type, color] = get_piece(x, y);
+
+            BINFO("%s %s at %d, %d", get_piece_name(type), get_piece_color_str(color), x, y);
+        }
+
+        BINFO("Black pieces: ");
+        for(auto val : black_pieces) {
+            auto [x, y] = unpack_pos(val);
+            auto [type, color] = get_piece(x, y);
+
+            BINFO("%s %s at %d, %d", get_piece_name(type), get_piece_color_str(color), x, y);
+        }
+    }
+
     // Check for mouse input
     if(platform_input_mouse_button_down(mouse_button::LEFT)) {
         auto pos = platform_input_get_mouse_position();
@@ -96,8 +133,61 @@ void board::update() {
                     if(sel_color == piece_color::BLACK) norm_y = 7 - norm_y;
 
                     if(p->is_valid_move(x, norm_y)) {
+                        if(sel_color == piece_color::WHITE) {
+                            BINFO("Erasing white piece at %d, %d", selected_piece.first, selected_piece.second);
+                            BINFO("Inserting white piece at %d, %d", (i8)pos.x, (i8)(7 - y));
+
+                            white_pieces.erase(pack_pos({selected_piece.first, selected_piece.second}));
+                            white_pieces.insert(pack_pos({(i8)pos.x, (i8)(7 - y)}));
+
+                            if(color == piece_color::BLACK) {
+                                BDEBUG("Erasing black piece at %d, %d", selected_piece.first, selected_piece.second);
+                                auto packed = pack_pos({(i8)pos.x, (i8)(7 - y)});
+                                black_pieces.erase(packed);
+                            } else {
+                                BINFO("Blank piece at %d, %d", (i8)pos.x, (i8)(7 - y));
+                            }
+                        } else {
+                            BINFO("Erasing black piece at %d, %d", selected_piece.first, selected_piece.second);
+                            BINFO("Inserting black piece at %d, %d", (i8)pos.x, (i8)(7 - y));
+
+                            black_pieces.erase(pack_pos({selected_piece.first, selected_piece.second}));
+                            black_pieces.insert(pack_pos({(i8)pos.x, (i8)(7 - y)}));
+
+                            if(color == piece_color::WHITE) {
+                                BINFO("Erasing white piece at %d, %d", selected_piece.first, selected_piece.second);
+                                white_pieces.erase(pack_pos({(i8)pos.x, (i8)(7 - y)}));
+                            }
+                        }
+
                         set_piece(pos.x, 7 - y, sel_type, sel_color);
                         set_piece(selected_piece.first, selected_piece.second, piece_type::EMPTY, piece_color::NONE);
+
+                        // Regenerate attacked squares
+                        bzero_memory(attacked_squares, sizeof(attacked_squares));
+                        if(white_turn) {
+                            for(auto val : white_pieces) {
+                                auto [x, y] = unpack_pos(val);
+                                auto [type, color] = get_piece(x, y);
+
+                                ASSERT(color == piece_color::WHITE, "INVALID COLOR");
+                                ptr_wrap wrap_p = piece::create(*this, {type, color}, x, y);
+                                for(auto& [x, y] : wrap_p->get_valid_moves()) {
+                                    attacked_squares[x][y] = true;
+                                }
+                            }
+                        } else {
+                            for(auto val : black_pieces) {
+                                auto [x, y] = unpack_pos(val);
+                                auto [type, color] = get_piece(x, y);
+
+                                ASSERT(color == piece_color::BLACK, "INVALID COLOR");
+                                ptr_wrap wrap_p = piece::create(*this, {type, color}, x, y);
+                                for(auto& [x, y] : wrap_p->get_valid_moves()) {
+                                    attacked_squares[x][y] = true;
+                                }
+                            }
+                        }
 
                         white_turn = !white_turn;
                     }
@@ -127,6 +217,15 @@ void board::draw_board(renderer_2d &rend) {
     }
 
     if(selected_piece.first != -1) display_possible_moves(rend, selected_piece.first, selected_piece.second);
+
+    // Draw the attacked squares
+    for(int i = 0; i < 8; i++) {
+        for(int j = 0; j < 8; j++) {
+            if(attacked_squares[i][j]) {
+                rend.draw_quad({i * 129, j * 129}, {130, 130}, {0, 0, 1, .5f});
+            }
+        }
+    }
 }
 
 void board::display_possible_moves(renderer_2d &rend, i8 x, i8 y) {
@@ -139,7 +238,7 @@ void board::display_possible_moves(renderer_2d &rend, i8 x, i8 y) {
     piece* p = piece::create(*this, {type, color}, x, norm_y);
 
     // Get the valid moves
-    auto moves = p->get_valid_moves();
+    auto moves = p->get_possible_moves();
 
     for(auto& [x, y] : moves) {
         if(color == piece_color::BLACK) y = 7 - y;

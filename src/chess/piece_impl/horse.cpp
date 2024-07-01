@@ -13,14 +13,14 @@ bvector<std::pair<i8, i8>> horse::get_valid_moves() {
     bvector<std::pair<i8, i8>> moves;
 
     // Check all possible horse moves
-    if(x + 2 <= 7 && y + 1 <= 7 && board_ref.get_piece(x + 2, y + 1, norm).color != color) moves.push_back({x + 2, y + 1});
-    if(x + 2 <= 7 && y - 1 >= 0 && board_ref.get_piece(x + 2, y - 1, norm).color != color) moves.push_back({x + 2, y - 1});
-    if(x - 2 >= 0 && y + 1 <= 7 && board_ref.get_piece(x - 2, y + 1, norm).color != color) moves.push_back({x - 2, y + 1});
-    if(x - 2 >= 0 && y - 1 >= 0 && board_ref.get_piece(x - 2, y - 1, norm).color != color) moves.push_back({x - 2, y - 1});
-    if(x + 1 <= 7 && y + 2 <= 7 && board_ref.get_piece(x + 1, y + 2, norm).color != color) moves.push_back({x + 1, y + 2});
-    if(x + 1 <= 7 && y - 2 >= 0 && board_ref.get_piece(x + 1, y - 2, norm).color != color) moves.push_back({x + 1, y - 2});
-    if(x - 1 >= 0 && y + 2 <= 7 && board_ref.get_piece(x - 1, y + 2, norm).color != color) moves.push_back({x - 1, y + 2});
-    if(x - 1 >= 0 && y - 2 >= 0 && board_ref.get_piece(x - 1, y - 2, norm).color != color) moves.push_back({x - 1, y - 2});
+    if(x + 2 <= 7 && y + 1 <= 7) moves.push_back({x + 2, y + 1});
+    if(x + 2 <= 7 && y - 1 >= 0) moves.push_back({x + 2, y - 1});
+    if(x - 2 >= 0 && y + 1 <= 7) moves.push_back({x - 2, y + 1});
+    if(x - 2 >= 0 && y - 1 >= 0) moves.push_back({x - 2, y - 1});
+    if(x + 1 <= 7 && y + 2 <= 7) moves.push_back({x + 1, y + 2});
+    if(x + 1 <= 7 && y - 2 >= 0) moves.push_back({x + 1, y - 2});
+    if(x - 1 >= 0 && y + 2 <= 7) moves.push_back({x - 1, y + 2});
+    if(x - 1 >= 0 && y - 2 >= 0) moves.push_back({x - 1, y - 2});
 
     return moves;
 }

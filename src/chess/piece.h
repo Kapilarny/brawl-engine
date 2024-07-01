@@ -17,6 +17,8 @@ public:
     virtual bool is_valid_move(i8 x, i8 y) = 0;
     virtual bvector<std::pair<i8, i8>> get_valid_moves() = 0;
 
+    bvector<std::pair<i8, i8>> get_possible_moves();
+
     void move(i8 x, i8 y) {
         this->x = x;
         this->y = y;
