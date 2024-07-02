@@ -103,7 +103,7 @@ void platform_log_output(const char* msg, LOG_LEVEL level) {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(hConsole, level_colors[(u32)level]);
 
-    WriteConsoleA(hConsole, msg, strlen(msg), NULL, NULL);
+    WriteConsoleA(hConsole, msg, strlen(msg), nullptr, nullptr);
 }
 
 f64 platform_get_absolute_time() {
@@ -133,7 +133,7 @@ key_state platform_input_get_key_state(input_key key) {
 glm::vec2 platform_input_get_mouse_position() {
     f64 x, y;
     glfwGetCursorPos((GLFWwindow*)glfwGetCurrentContext(), &x, &y);
-    return glm::vec2((f32)x, (f32)y);
+    return {(f32)x, (f32)y};
 }
 
 bool platform_input_mouse_button_down(mouse_button button) {

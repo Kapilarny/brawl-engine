@@ -57,7 +57,7 @@ private:
     T comp_array[MAX_ENTITIES];
     std::unordered_map<entity, u32> entity_to_index_map;
     std::unordered_map<u32, entity> index_to_entity_map;
-    u32 size;
+    u32 size{};
 };
 
 #endif //COMPONENT_ARRAY_H

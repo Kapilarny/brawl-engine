@@ -9,9 +9,9 @@ bool bishop::is_valid_move(i8 x, i8 y) {
     return std::abs(x - this->x) == std::abs(y - this->y);
 }
 
-bvector<std::pair<i8, i8>> bishop::get_valid_moves() {
+std::vector<std::pair<i8, i8>> bishop::get_valid_moves() {
     // Check all possible bishop moves
-    bvector<std::pair<i8, i8>> moves;
+    std::vector<std::pair<i8, i8>> moves;
 
     // You can probably do it in 2 loops, hell even one. Am i going to? No.
     for(i8 i = 1; x + i <= 7 && y + i <= 7; i++) {

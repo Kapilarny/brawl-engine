@@ -1,5 +1,6 @@
 #ifndef BUFFERS_H
 #define BUFFERS_H
+#include <utility>
 #include <vector>
 
 #include "defines.h"
@@ -70,7 +71,7 @@ public:
     buffer_layout() = default;
 
     explicit buffer_layout(std::vector<buffer_element> elements) {
-        buf_elements = elements;
+        buf_elements = std::move(elements);
 
         u32 offset = 0;
         stride = 0;

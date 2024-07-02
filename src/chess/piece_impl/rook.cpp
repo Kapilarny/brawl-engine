@@ -9,8 +9,8 @@ bool rook::is_valid_move(i8 x, i8 y) {
     return (x == this->x || y == this->y);
 }
 
-bvector<std::pair<i8, i8>> rook::get_valid_moves() {
-    bvector<std::pair<i8, i8>> moves;
+std::vector<std::pair<i8, i8>> rook::get_valid_moves() {
+    std::vector<std::pair<i8, i8>> moves;
 
     // Check all possible rook moves
     for(i8 i = x + 1; i <= 7; i++) {

@@ -12,9 +12,9 @@ bool king::is_valid_move(i8 x, i8 y) {
     return valid && !attacked;
 }
 
-bvector<std::pair<i8, i8>> king::get_valid_moves() {
+std::vector<std::pair<i8, i8>> king::get_valid_moves() {
     // Check all possible king moves
-    bvector<std::pair<i8, i8>> moves;
+    std::vector<std::pair<i8, i8>> moves;
 
     if(x - 1 >= 0 && y - 1 >= 0 && !board_ref.is_attacked(x - 1, y - 1, norm)) moves.push_back({x - 1, y - 1});
     if(y - 1 >= 0 && !board_ref.is_attacked(x, y - 1, norm)) moves.push_back({x, y - 1});

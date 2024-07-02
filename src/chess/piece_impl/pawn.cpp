@@ -15,8 +15,8 @@ bool pawn::is_valid_move(i8 x, i8 y) {
     return board_ref.get_piece(x, y, norm).type == piece_type::EMPTY;
 }
 
-bvector<std::pair<i8, i8>> pawn::get_valid_moves() {
-    bvector<std::pair<i8, i8>> moves;
+std::vector<std::pair<i8, i8>> pawn::get_valid_moves() {
+    std::vector<std::pair<i8, i8>> moves;
 
     if(y == 7) return moves; // Pawn is at the end of the board
 
@@ -34,8 +34,8 @@ bvector<std::pair<i8, i8>> pawn::get_valid_moves() {
     return moves;
 }
 
-bvector<std::pair<i8, i8>> pawn::get_attack_moves() {
-    bvector<std::pair<i8, i8>> moves;
+std::vector<std::pair<i8, i8>> pawn::get_attack_moves() {
+    std::vector<std::pair<i8, i8>> moves;
 
     if(x + 1 <= 7) moves.push_back({x + 1, y + 1});
     if(x - 1 >= 0) moves.push_back({x - 1, y + 1});

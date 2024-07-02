@@ -258,6 +258,9 @@ void board::move_piece(i8 x, i8 y) {
         return;
     }
 
+    // Check if the move doesn't put the king in check
+    if(!simulate_move(selected_piece.first, selected_piece.second, x, y)) return;
+
     if(sel_color == piece_color::WHITE) {
         white_pieces.erase(pack_pos({selected_piece.first, selected_piece.second}));
         white_pieces.insert(pack_pos({x, y}));

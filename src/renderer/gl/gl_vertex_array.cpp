@@ -43,6 +43,8 @@ GLenum shader_data_type_to_gl(shader_data_type type) {
 
         default: ASSERT(false, "Unknown shader data type!");
     }
+
+    return 0;
 }
 
 void gl_vertex_array::add_vertex_buffer(vertex_buffer* vert_buffer) {

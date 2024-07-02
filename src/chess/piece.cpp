@@ -24,8 +24,8 @@ piece* piece::create(board &board, piece_data data, i8 x, i8 y) {
     return nullptr;
 }
 
-bvector<std::pair<i8, i8>> piece::get_possible_moves() {
-    bvector<std::pair<i8, i8>> moves;
+std::vector<std::pair<i8, i8>> piece::get_possible_moves() {
+    std::vector<std::pair<i8, i8>> moves;
 
     for(auto move : get_valid_moves()) {
         if(board_ref.get_piece(move.first, move.second, norm).color != color) {
